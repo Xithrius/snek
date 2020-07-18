@@ -6,6 +6,8 @@ from discord.ext.commands import when_mentioned_or
 
 from snek.bot import Snek
 
+log = logging.getLogger(__name__)
+
 
 snek = Snek(
     command_prefix=when_mentioned_or('!'),
@@ -14,5 +16,8 @@ snek = Snek(
     max_messages=10_000
 )
 
-logging.info('Snek starting..')
+# Load extensions
+snek.load_extension('snek.cogs.ping')
+
+log.info('Snek starting..')
 snek.run(os.environ.get('BOT_TOKEN'))
