@@ -1,7 +1,11 @@
+import logging
+
 import discord
 from discord.ext.commands import Cog, command, Context
 
 from snek.bot import Snek
+
+log = logging.getLogger(__name__)
 
 
 class Ping(Cog):
@@ -18,6 +22,8 @@ class Ping(Cog):
             description=f"**Latency:** {self.bot.ws.latency * 1000:.4f} ms",
             color=discord.Colour.blurple(),
         )
+
+        log.trace(f'{ctx.author} invoked !ping command')
         await ctx.send(embed=embed)
 
 
