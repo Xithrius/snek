@@ -1,8 +1,6 @@
 from collections import namedtuple
 import logging
 
-import discord
-
 from snek.cogs.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
@@ -32,7 +30,7 @@ class GuildSyncer(ObjectSyncerABC):
         db_guild_ids = {guild.id for guild in db_guilds}
         cache_guild_ids = {guild.id for guild in cache_guilds}
 
-        new_guild_ids = cache_guild_ids - db_guilds
+        new_guild_ids = cache_guild_ids - db_guild_ids
         deleted_guild_ids = db_guilds - cache_guild_ids
 
         guilds_to_create = {guild for guild in cache_guilds if guild.id in new_guild_ids}
@@ -49,7 +47,7 @@ class GuildSyncer(ObjectSyncerABC):
 
         log.trace('Syncing updated guilds..')
         for guild in diff.updated:
-            await self.bot.api_client.put(f'guilds/{guild.id}', json=role._asdict())
+            await self.bot.api_client.put(f'guilds/{guild.id}', json=guild._asdict())
 
         log.trace('Syncing deleted guilds..')
         for guild in diff.deleted:
