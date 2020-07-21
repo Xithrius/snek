@@ -19,7 +19,7 @@ class Ping(Cog):
         """Pong! Returns websocket latency."""
         embed = discord.Embed(
             title="Pong!",
-            description=f"**Latency:** {self.bot.ws.latency * 1000:.4f} ms",
+            description=f"**Latency:** {self.bot.latency * 1000:.4f} ms",
             color=discord.Colour.blurple(),
         )
 
