@@ -14,7 +14,7 @@ class GuildSyncer(ObjectSyncerABC):
     """Synchronise the database with guilds in the cache."""
     name = 'guild'
 
-    async def get_diff(self, guild: discord.Guild) -> Diff:
+    async def get_diff(self) -> Diff:
         """Return the difference between the cache of guilds and the database."""
         log.trace('Getting the diff for guilds..')
         guilds = await self.bot.api_client.get('guilds')

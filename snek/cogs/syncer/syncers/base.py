@@ -20,7 +20,7 @@ class ObjectSyncerABC(ABC):
         """The name of the syncer."""
 
     @abstractmethod
-    async def get_diff(self, guild: discord.Guild) -> None:
+    async def get_diff(self) -> None:
         """Return the difference between the cache and the database."""
 
     @abstractmethod
