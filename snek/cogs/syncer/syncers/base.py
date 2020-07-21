@@ -3,11 +3,16 @@ from collections import namedtuple
 
 import discord
 
+from snek.bot import Snek
+
 Diff = namedtuple('Diff', ('created', 'updated', 'deleted'))
 
 
 class ObjectSyncerABC(ABC):
     """Base class for synchronising the database with Discord objects in the cache."""
+
+    def __init__(self, bot: Snek) -> None:
+        self.bot = bot
 
     @property
     @abstractmethod
