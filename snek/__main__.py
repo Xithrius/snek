@@ -18,6 +18,7 @@ snek = Snek(
 
 # Load extensions
 snek.load_extension('snek.cogs.ping')
+snek.load_extension('snek.cogs.syncer')
 
 log.info('Snek starting..')
 snek.run(os.environ.get('BOT_TOKEN'))
