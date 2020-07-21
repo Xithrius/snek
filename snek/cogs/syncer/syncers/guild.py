@@ -39,7 +39,7 @@ class GuildSyncer(ObjectSyncerABC):
 
         return Diff(guilds_to_create, guilds_to_update, guilds_to_delete)
 
-    async def sync(self, diff: Diff) -> None:
+    async def sync_diff(self, diff: Diff) -> None:
         """Synchronise the database with the guilds in the cache."""
         log.trace('Syncing created guilds..')
         for guild in diff.created:

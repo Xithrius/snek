@@ -22,5 +22,5 @@ class ObjectSyncerABC(ABC):
         """Return the difference between the cache and the database."""
 
     @abstractmethod
-    async def sync(self, diff: Diff) -> None:
+    async def sync_diff(self, diff: Diff) -> None:
         """Perform the API calls for synchronisation."""
