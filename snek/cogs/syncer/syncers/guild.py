@@ -15,7 +15,7 @@ class GuildSyncer(ObjectSyncerABC):
     async def get_diff(self) -> Diff:
         """Return the difference between the cache of guilds and the database."""
         log.trace('Getting the diff for guilds..')
-        guilds = await self.bot.api_client.get('guilds')
+        guilds = await self.bot.api_client.get('guilds/')
 
         db_guilds = {Guild(**guild) for guild in guilds}
         cache_guilds = {
@@ -43,7 +43,7 @@ class GuildSyncer(ObjectSyncerABC):
         """Synchronise the database with the guilds in the cache."""
         log.trace('Syncing created guilds..')
         for guild in diff.created:
-            await self.bot.api_client.post('guilds', json=guild._asdict())
+            await self.bot.api_client.post('guilds/', json=guild._asdict())
 
         log.trace('Syncing updated guilds..')
         for guild in diff.updated:
