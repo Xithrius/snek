@@ -22,7 +22,7 @@ class GuildSyncer(ObjectSyncerABC):
             Guild(
                 id=guild.id,
                 name=guild.name,
-                icon_url=guild.icon_url
+                icon_url=str(guild.icon_url)
             )
             for guild in self.bot.guilds
         }
