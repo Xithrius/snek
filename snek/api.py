@@ -55,6 +55,8 @@ class APIClient:
         self._creation_task = None
         self._default_session_kwargs = kwargs
 
+        self.recreate()
+
     async def _create_session(self, **session_kwargs) -> None:
         """Create the aiohttp session with `session_kwargs` and set the ready event."""
         await self.close()
@@ -95,6 +97,7 @@ class APIClient:
                 response_text = await response.text()
                 raise ResponseCodeError(response=response, response_text=response_text)
 
+    @staticmethod
     def endpoint_url(endpoint: str) -> str:
         return f'https://sneknetwork.com/api/{quote(endpoint)}'
 
