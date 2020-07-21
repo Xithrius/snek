@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from collections import namedtuple
+import logging
 
 from snek.bot import Snek
+
+log = logging.getLogger(__name__)
 
 Diff = namedtuple('Diff', ('created', 'updated', 'deleted'))
 
@@ -24,3 +27,8 @@ class ObjectSyncerABC(ABC):
     @abstractmethod
     async def sync_diff(self, diff: Diff) -> None:
         """Perform the API calls for synchronisation."""
+
+    async def sync(self) -> None:
+        """Perform the synchronisation."""
+        log.info(f'Starting the {self.name} syncer..')
+        await self.sync_diff(await self.get_diff())
