@@ -90,7 +90,7 @@ class APIClient:
             try:
                 response_json = await response.json()
                 raise ResponseCodeError(response=response, response_json=response_json)
-            
+
             except aiohttp.ContentTypeError:
                 response_text = await response.text()
                 raise ResponseCodeError(response=response, response_text=response_text)
@@ -106,23 +106,23 @@ class APIClient:
             await self.maybe_raise_for_status(resp, raise_for_status)
             return await resp.json()
 
-    async def get(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
+    async def get(self, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
         """Snek API GET request."""
         return await self.request("GET", endpoint, raise_for_status=raise_for_status, **kwargs)
 
-    async def post(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
+    async def post(self, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
         """Snek API POST request."""
         return await self.request("POST", endpoint, raise_for_status=raise_for_status, **kwargs)
 
-    async def put(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
+    async def put(self, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
         """Snek API PUT request."""
         return await self.request("PUT", endpoint, raise_for_status=raise_for_status, **kwargs)
 
-    async def patch(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
+    async def patch(self, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
         """Snek API PATCH request."""
         return await self.request("PATCH", endpoint, raise_for_status=raise_for_status, **kwargs)
 
-    async def delete(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Optional[t.Dict]:
+    async def delete(self, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Optional[t.Dict]:
         """Snek API DELETE request."""
         await self.ready.wait()
 
