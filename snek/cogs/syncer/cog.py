@@ -83,6 +83,23 @@ class Syncer(Cog):
             }
         )
 
+    @Cog.listener()
+    async def on_guild_role_update(self, before: discord.Role, after: discord.Role) -> None:
+        """Adds the updated role information into the database through the Snek API."""
+        attrs = ('name', 'color', 'permissions', 'position')
+
+        payload = dict()
+        for attr in attrs:
+            if getattr(before, attr) != (new_value := getattr(after, attr)):
+                if attr in ('color', 'permissions'):
+                    payload[attr] = new_value.value
+                else:
+                    payload[attr] = new_value
+
+        if payload:
+            log.debug(f'Updated role {after.name} ({after.id}) for guild {after.guild.name} ({after.guild.id})')
+            await self.bot.api_client.patch(f'roles/{after.id}', json=payload)
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
