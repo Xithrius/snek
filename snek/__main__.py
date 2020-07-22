@@ -21,4 +21,4 @@ snek.load_extension('snek.exts.ping')
 snek.load_extension('snek.exts.syncer')
 
 log.info('Snek starting..')
-snek.run(os.environ.get('BOT_TOKEN'))
+snek.run(os.environ.get('SNEK_BOT_TOKEN'))
