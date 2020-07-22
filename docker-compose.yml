@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  snek:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs/:/bot/logs/
+      - ./:/bot/:ro
+    tty: true
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      SNEK_API_TOKEN: ${SNEK_API_TOKEN}
+      SNEK_LOG_LEVEL: ${SNEK_LOG_LEVEL}
