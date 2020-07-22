@@ -32,3 +32,4 @@ class ObjectSyncerABC(ABC):
         """Perform the synchronisation."""
         log.info(f'Starting the {self.name} syncer..')
         await self.sync_diff(await self.get_diff())
+        log.info(f'The {self.name} syncer is finished.')
