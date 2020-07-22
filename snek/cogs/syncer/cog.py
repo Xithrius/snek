@@ -63,8 +63,9 @@ class Syncer(Cog):
             if getattr(before, attr) != (new_value := getattr(after, attr)):
                 payload[attr] = new_value
 
-        log.debug(f'Updated guild {after.name} ({after.id})')
-        await self.bot.api_client.patch(f'guilds/{after.id}', json=payload)
+        if payload:
+            log.debug(f'Updated guild {after.name} ({after.id})')
+            await self.bot.api_client.patch(f'guilds/{after.id}', json=payload)
 
 
 def setup(self, bot: Snek) -> None:
