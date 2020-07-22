@@ -53,6 +53,18 @@ class Syncer(Cog):
 
         # TODO: Add roles and users on guild join.
 
+        @Cog.listener()
+        async def on_guild_update(self, before: discord.Guild, after: discord.Guild) -> None:
+            """Adds the updated guild information into the database through the Snek API."""
+            attrs = ('name', 'icon_url')
+
+            payload = dict()
+            for attr in attrs:
+                if getattr(before, attr) != (new_value := getattr(after, attr)):
+                    payload[attr] = new_value
+
+            self.bot.api_client.patch(f'guilds/{after.id}', json=payload)
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
