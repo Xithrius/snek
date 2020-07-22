@@ -137,6 +137,21 @@ class Syncer(Cog):
             # If we got a 404, that means the user is new.
             await self.bot.api_client.post('users/', json=payload)
 
+    @Cog.listener()
+    async def on_member_remove(self, member: discord.Member) -> None:
+        """Remove guild from the user's data in the database."""
+        log.trace(f'User {member.name} ({member.id}) left guild {member.guild} ({member.guild.id})')
+
+        member_info = await self.bot.api_client.get(f'users/{member.id}')
+
+        await self.bot.api_client.patch(
+            f'users/{member.id}',
+            json={
+                'guilds': list(set(member_info['guilds']) - {member.guild.id}),
+                'roles': list(set(member_info['roles']) - {role.id for role in member.guild.roles})
+            }
+        )
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
