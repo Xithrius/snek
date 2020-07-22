@@ -1,7 +1,7 @@
 from collections import namedtuple
 import logging
 
-from snek.cogs.syncer.syncers.base import Diff, ObjectSyncerABC
+from snek.exts.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
 

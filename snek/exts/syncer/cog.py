@@ -5,7 +5,7 @@ from discord.ext.commands import Cog
 
 from snek.api import ResponseCodeError
 from snek.bot import Snek
-from snek.cogs.syncer.syncers import GuildSyncer, RoleSyncer, UserSyncer
+from snek.exts.syncer.syncers import GuildSyncer, RoleSyncer, UserSyncer
 
 log = logging.getLogger(__name__)
 

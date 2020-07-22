@@ -1,5 +1,5 @@
 from snek.bot import Snek
-from snek.cogs.syncer.cog import Syncer
+from snek.exts.syncer.cog import Syncer
 
 
 def setup(bot: Snek) -> None:
