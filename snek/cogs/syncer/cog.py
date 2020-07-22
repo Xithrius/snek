@@ -64,7 +64,7 @@ class Syncer(Cog):
                 payload[attr] = new_value
 
         if payload:
-            log.debug(f'Updated guild {after.name} ({after.id})')
+            log.trace(f'Updated guild {after.name} ({after.id})')
             await self.bot.api_client.patch(f'guilds/{after.id}', json=payload)
 
     @Cog.listener()
@@ -97,7 +97,7 @@ class Syncer(Cog):
                     payload[attr] = new_value
 
         if payload:
-            log.debug(f'Updated role {after.name} ({after.id}) for guild {after.guild.name} ({after.guild.id})')
+            log.trace(f'Updated role {after.name} ({after.id}) for guild {after.guild.name} ({after.guild.id})')
             await self.bot.api_client.patch(f'roles/{after.id}', json=payload)
 
 
