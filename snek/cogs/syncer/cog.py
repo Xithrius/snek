@@ -138,6 +138,19 @@ class Syncer(Cog):
             await self.bot.api_client.post('users/', json=payload)
 
     @Cog.listener()
+    async def on_member_update(self, before: discord.Member, after: discord.Member) -> None:
+        """Update the roles of the member in the database if a change is detected."""
+        if before.roles != after.roles:
+            log.trace(
+                f'Updated roles for user {after.name} ({after.id}) in guild {after.guild.name} ({after.guild.id})'
+            )
+
+            await self.bot.api_client.patch(
+                f'users/{after.id}',
+                json={'roles': sorted(role.id for role in after.roles)}
+            )
+
+    @Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
         """Remove guild from the user's data in the database."""
         log.trace(f'User {member.name} ({member.id}) left guild {member.guild} ({member.guild.id})')
