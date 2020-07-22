@@ -17,7 +17,14 @@ class UserSyncer(ObjectSyncerABC):
         log.trace('Getting diff for users..')
         users = await self.bot.api_client.get('users/')
 
-        db_users = {User(**user) for user in users}
+        db_users = {
+            User(
+                guilds=tuple(user.pop('guilds')),
+                roles=tuple(user.pop('roles')),
+                **user
+            )
+            for user in users
+        }
         db_user_ids = {user.id for user in db_users}
 
         cache_users_dict = dict()
