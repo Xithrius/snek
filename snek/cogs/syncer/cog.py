@@ -165,6 +165,25 @@ class Syncer(Cog):
             }
         )
 
+    @Cog.listener()
+    async def on_user_update(self, before: discord.User, after: discord.User) -> None:
+        """Update the user information in the database if a relevant change is detected."""
+        attrs = ('name', 'display_name', 'discriminator', 'avatar_url')
+
+        payload = dict()
+        for attr in attrs:
+            if getattr(before, attr) != (new_value := getattr(after, attr)):
+                if attr == 'avatar_url':
+                    payload[attr] = str(new_value)
+                else:
+                    payload[attr] = new_value
+
+        if payload:
+            log.trace(
+                f'Updated user info for {after.name} ({after.id})'
+            )
+            await self.bot.api_client.patch(f'users/{after.id}', json=payload)
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
