@@ -100,6 +100,12 @@ class Syncer(Cog):
             log.trace(f'Updated role {after.name} ({after.id}) for guild {after.guild.name} ({after.guild.id})')
             await self.bot.api_client.patch(f'roles/{after.id}', json=payload)
 
+    @Cog.listener()
+    async def on_guild_role_delete(self, role: discord.Role) -> None:
+        """Deletes the role from the database when deleted from a guild."""
+        log.trace(f'Deleted role {role.name} ({role.id}) from guild {role.guild.name} ({role.guild.id})')
+        await self.bot.api_client.delete(f'roles/{role.id}')
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
