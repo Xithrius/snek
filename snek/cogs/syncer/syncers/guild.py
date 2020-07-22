@@ -31,13 +31,11 @@ class GuildSyncer(ObjectSyncerABC):
         cache_guild_ids = {guild.id for guild in cache_guilds}
 
         new_guild_ids = cache_guild_ids - db_guild_ids
-        deleted_guild_ids = db_guild_ids - cache_guild_ids
 
         guilds_to_create = {guild for guild in cache_guilds if guild.id in new_guild_ids}
         guilds_to_update = cache_guilds - db_guilds - guilds_to_create
-        guilds_to_delete = {guild for guild in db_guilds if guild.id in deleted_guild_ids}
 
-        return Diff(guilds_to_create, guilds_to_update, guilds_to_delete)
+        return Diff(guilds_to_create, guilds_to_update, None)
 
     async def sync_diff(self, diff: Diff) -> None:
         """Synchronise the database with the guilds in the cache."""
@@ -48,7 +46,3 @@ class GuildSyncer(ObjectSyncerABC):
         log.trace('Syncing updated guilds..')
         for guild in diff.updated:
             await self.bot.api_client.put(f'guilds/{guild.id}', json=guild._asdict())
-
-        log.trace('Syncing deleted guilds..')
-        for guild in diff.deleted:
-            await self.bot.api_client.delete(f'guilds/{guild.id}')
