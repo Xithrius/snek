@@ -118,7 +118,6 @@ class Syncer(Cog):
         payload = {
             'id': member.id,
             'name': member.name,
-            'display_name': member.display_name,
             'discriminator': member.discriminator,
             'avatar_url': str(member.avatar_url),
             'roles': sorted(role.id for role in member.roles),
@@ -168,7 +167,7 @@ class Syncer(Cog):
     @Cog.listener()
     async def on_user_update(self, before: discord.User, after: discord.User) -> None:
         """Update the user information in the database if a relevant change is detected."""
-        attrs = ('name', 'display_name', 'discriminator', 'avatar_url')
+        attrs = ('name', 'discriminator', 'avatar_url')
 
         payload = dict()
         for attr in attrs:

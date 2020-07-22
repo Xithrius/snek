@@ -5,7 +5,7 @@ from snek.cogs.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
 
-User = namedtuple('User', ('id', 'name', 'display_name', 'discriminator', 'avatar_url', 'roles', 'guilds'))
+User = namedtuple('User', ('id', 'name', 'discriminator', 'avatar_url', 'roles', 'guilds'))
 
 
 class UserSyncer(ObjectSyncerABC):
@@ -42,7 +42,6 @@ class UserSyncer(ObjectSyncerABC):
                     cache_users_dict[user.id] = User(
                         id=user.id,
                         name=user.name,
-                        display_name=user.display_name,
                         discriminator=user.discriminator,
                         avatar_url=str(user.avatar_url),
                         roles=tuple(sorted(role.id for role in user.roles)),
