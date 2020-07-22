@@ -106,6 +106,37 @@ class Syncer(Cog):
         log.trace(f'Deleted role {role.name} ({role.id}) from guild {role.guild.name} ({role.guild.id})')
         await self.bot.api_client.delete(f'roles/{role.id}')
 
+    @Cog.listener()
+    async def on_member_join(self, member: discord.Member) -> None:
+        """
+        Adds a new user or updates an existing user to the database when a member joins a guild.
+
+        If the joining member is a user that is already know to the database (e.g. a user who
+        previously left), it will update the user's information. If the user is not yet known,
+        the user is added.
+        """
+        payload = {
+            'id': member.id,
+            'name': member.name,
+            'display_name': member.display_name,
+            'discriminator': member.discriminator,
+            'avatar_url': str(member.avatar_url),
+            'roles': sorted(role.id for role in member.roles),
+            'guilds': [guild.id for guild in self.bot.guilds if guild.get_member(member.id) is not None]
+        }
+
+        log.trace(f'User {member.name} ({member.id}) joined guild {member.guild.name} ({member.guild.id})')
+
+        try:
+            await self.bot.api_client.put(f'users/{member.id}', json=payload)
+
+        except ResponseCodeError as err:
+            if err.response.status != 404:
+                raise
+
+            # If we got a 404, that means the user is new.
+            await self.bot.api_client.post('users/', json=payload)
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
