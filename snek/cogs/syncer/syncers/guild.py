@@ -31,7 +31,7 @@ class GuildSyncer(ObjectSyncerABC):
         cache_guild_ids = {guild.id for guild in cache_guilds}
 
         new_guild_ids = cache_guild_ids - db_guild_ids
-        deleted_guild_ids = db_guilds - cache_guild_ids
+        deleted_guild_ids = db_guild_ids - cache_guild_ids
 
         guilds_to_create = {guild for guild in cache_guilds if guild.id in new_guild_ids}
         guilds_to_update = cache_guilds - db_guilds - guilds_to_create
