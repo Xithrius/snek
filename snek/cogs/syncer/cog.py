@@ -67,6 +67,22 @@ class Syncer(Cog):
             log.debug(f'Updated guild {after.name} ({after.id})')
             await self.bot.api_client.patch(f'guilds/{after.id}', json=payload)
 
+    @Cog.listener()
+    async def on_guild_role_create(self, role: discord.Role) -> None:
+        """Adds the newly created role to the database through the API."""
+        log.trace(f'New role {role.name} ({role.id}) created in guild {role.guild.name} ({role.guild.id})')
+        await self.bot.api_client.post(
+            'roles/',
+            json={
+                'id': role.id,
+                'color': role.color.value,
+                'name': role.name,
+                'permissions': role.permissions.value,
+                'position': role.position,
+                'guild': role.guild.id
+            }
+        )
+
 
 def setup(self, bot: Snek) -> None:
     """Load the `Syncer` Cog."""
