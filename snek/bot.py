@@ -20,3 +20,8 @@ class Snek(Bot):
         """Adds a cog to the bot and logs the operation."""
         super().add_cog(cog)
         log.info(f"Cog loaded: {cog.qualified_name}")
+
+    async def close(self) -> None:
+        """Close the Discord and API Client connection."""
+        await super().close()
+        await self.api_client.close()
