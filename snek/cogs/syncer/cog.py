@@ -51,7 +51,7 @@ class Syncer(Cog):
             # If we got a 404, that means the guild is new.
             await self.bot.api_client.post('guilds/', json=payload)
 
-        # TODO: Add roles and users on guild join.
+        await self.sync()
 
     @Cog.listener()
     async def on_guild_update(self, before: discord.Guild, after: discord.Guild) -> None:
