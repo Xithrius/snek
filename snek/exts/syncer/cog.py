@@ -1,7 +1,8 @@
 import logging
 
 import discord
-from discord.ext.commands import Cog
+from discord.ext import commands
+from discord.ext.commands import Cog, Context
 
 from snek.api import ResponseCodeError
 from snek.bot import Snek
@@ -182,6 +183,29 @@ class Syncer(Cog):
                 f'Updated user info for {after.name} ({after.id})'
             )
             await self.bot.api_client.patch(f'users/{after.id}', json=payload)
+
+    @commands.group(name='sync')
+    async def sync_group(self, ctx: Context) -> None:
+        """Run synchronisations between this bot and the Snek API manually."""
+
+    @sync_group.command(name='guilds')
+    async def sync_guilds_command(self, ctx: Context) -> None:
+        """Manually synchronise cached guilds with the guilds in the API."""
+        await self.guild_syncer.sync(ctx)
+
+    @sync_group.command(name='roles')
+    async def sync_roles_command(self, ctx: Context) -> None:
+        """Manually synchronise cached roles with the roles in the API."""
+        await self.role_syncer.sync(ctx)
+
+    @sync_group.command(name='users')
+    async def sync_users_command(self, ctx: Context) -> None:
+        """Manually synchronise cached users with the users in the API."""
+        await self.user_syncer.sync(ctx)
+
+    async def cog_check(self, ctx: Context) -> bool:
+        """Only allow the owner of the bot to invoke the commands in this cog."""
+        return await self.bot.is_owner(ctx.author)
 
 
 def setup(self, bot: Snek) -> None:

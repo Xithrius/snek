@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
 from collections import namedtuple
 import logging
+import typing as t
 
+from discord.ext.commands import Context
+
+from snek.api import ResponseCodeError
 from snek.bot import Snek
 
 log = logging.getLogger(__name__)
@@ -28,8 +32,26 @@ class ObjectSyncerABC(ABC):
     async def sync_diff(self, diff: Diff) -> None:
         """Perform the API calls for synchronisation."""
 
-    async def sync(self) -> None:
+    async def sync(self, ctx: t.Optional[Context] = None) -> None:
         """Perform the synchronisation."""
         log.info(f'Starting the {self.name} syncer..')
-        await self.sync_diff(await self.get_diff())
-        log.info(f'The {self.name} syncer is finished.')
+
+        msg = mention = ''
+        if ctx:
+            msg = await ctx.send(f'📊 Synchronising {self.name}s..')
+            mention = ctx.author.mention
+
+        try:
+            await self.sync_diff(await self.get_diff())
+        except ResponseCodeError as err:
+            log.exception(f'{self.name.capitalize()} syncer failed!')
+
+            results = f'Status {err.status}\n```{err.response_json or "See log output for details."}```'
+            status = f'❌ {mention} {self.name.capitalize()} synchronisation failed: {results}'
+
+        else:
+            log.info(f'The {self.name} syncer is finished.')
+            status = f'✅ Synchronisation of {self.name}s is complete.'
+
+        if msg:
+            await msg.edit(content=status)
