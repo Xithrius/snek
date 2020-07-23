@@ -43,6 +43,12 @@ class ExtensionManager(commands.Cog):
     def __init__(self, bot: Snek) -> None:
         self.bot = bot
 
+        self.actions = {
+            'LOAD': self.bot.load_extension,
+            'RELOAD': self.bot.reload_extension,
+            'UNLOAD': self.bot.unload_extension
+        }
+
     @group(name='extensions', aliases=('ext', 'exts', 'c', 'cog', 'cogs'), invoke_with_command=True)
     async def extensions_group(self, ctx: Context) -> None:
         """Load, reload, unload, and list extensions."""
