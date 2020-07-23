@@ -1,3 +1,4 @@
+import asyncio
 from collections import namedtuple
 from contextlib import suppress
 import itertools
@@ -39,9 +40,10 @@ async def help_cleanup(bot: Snek, author: discord.Member, message: discord.Messa
     with suppress(discord.NotFound):
         try:
             await bot.wait_for('reaction_add', check=check, timeout=300)
-            await message.delete()
-        except TimeoutError:
+        except asyncio.TimeoutError:
             await message.remove_reaction(DELETE_EMOJI, bot.user)
+        else:
+            await message.delete()
 
 
 class HelpQueryNotFound(ValueError):
@@ -151,7 +153,7 @@ class CustomHelpCommand(HelpCommand):
         name = str(command) if not parent else f'{parent} {command.name}'
 
         # Show command signature
-        command_details = f'**```!{name} {command.signature}```**'
+        command_details = f'**```!{name} {command.signature}```**\n'
 
         # Show aliases
         aliases = ', '.join(
