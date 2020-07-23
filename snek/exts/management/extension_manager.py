@@ -79,6 +79,29 @@ class ExtensionManager(commands.Cog):
         If `*` is given, all loaded extensions will be unloaded.
         """
 
+    def multi_manage(self, action: str, *extensions: str) -> str:
+        """Apply an action to multiple extensions and return the results."""
+        if len(extensions) == 1:
+            msg, _ = self.manage(action, extensions[0])
+            return msg
+
+        verb = action.lower()
+        failures = dict()
+
+        for ext in extensions:
+            _, error = self.manage(action, ext)
+            if error is not None:
+                failures[ext] = error
+
+        msg = f'{"❌" if failures else "✅"} {len(extensions) - len(failures)} / {len(extensions)} extensions {verb}ed.'
+
+        if failures:
+            failures = '\n'.join(f'{ext}:\n    {err}' for ext, err in failures.items())
+            msg += f'\nFailures:\n```{failures}```'
+
+        log.debug(f'{verb.capitalize()}ed {len(extensions)} extensions.')
+        return msg
+
     def manage(self, action: str, extension: str) -> t.Tuple[str, t.Optional[str]]:
         """
         Apply an action to an extension.
