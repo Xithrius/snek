@@ -95,7 +95,26 @@ class ErrorHandler(Cog):
             await help_command
 
     async def handle_check_failure(self, ctx: Context, error: errors.CheckFailure) -> None:
-        pass
+        """
+        Send an error message in `ctx.channel` for certain types of CheckFailure.
+
+        The following errors are handled:
+        * BotMissingPermissions
+        * BotMissingRole
+        * BotMissingAnyRole
+        * NoPrivateMessage
+        * InWhitelistCheckFailure
+        """
+        bot_missing_errors = (
+            errors.BotMissingPermissions,
+            errors.BotMissingRole,
+            errors.BotMissingAnyRole
+        )
+
+        if isinstance(error, bot_missing_errors):
+            await ctx.send(
+                "Sorry, it looks like I don't have the permissions or roles I need to do that."
+            )
 
     async def handle_snek_api_error(self, ctx: Context, error: ResponseCodeError) -> None:
         pass
