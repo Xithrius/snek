@@ -1,9 +1,24 @@
+from __future__ import annotations
+
+import asyncio
 import collections
 from collections.abc import Sequence
+from contextlib import suppress
 import logging
 import typing as t
 
+import discord
+from discord.ext.commands import Context
+
 log = logging.getLogger(__name__)
+
+FIRST_EMOJI = '⏪'
+LEFT_EMOJI = '◀️'
+RIGHT_EMOJI = '▶️'
+LAST_EMOJI = '⏩'
+DELETE_EMOJI = '❌'
+
+PAGINATION_EMOJIS = (FIRST_EMOJI, LEFT_EMOJI, RIGHT_EMOJI, LAST_EMOJI, DELETE_EMOJI)
 
 
 class EmptyPaginatorLines(Exception):
@@ -143,3 +158,186 @@ class LinePaginator(Sequence):
             self.current_page.append(self.page_header)
 
         self._remaining_chars = self.max_chars
+
+
+class PaginatedEmbed(discord.Embed):
+    """
+    Paginates the description of an embed.
+
+    There is an alternative constructor, `from_lines`, which accepts
+    an iterable of lines and creates a `LinePaginator`.
+    """
+
+    def __init__(self, pages: t.Sequence, timeout: int = 120, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+        if not pages:
+            pages = ["[There's nothing to show here]"]
+
+        self.pages = pages
+        self.current_page = 0
+        self.last_page = len(pages) - 1
+
+        self.timeout = timeout
+
+        self._footer_text = discord.Embed.Empty
+        self._message = None
+        self._context = None
+        self.owner = None
+
+        self.new_page_number = {
+            FIRST_EMOJI: lambda _: 0,
+            LEFT_EMOJI: lambda current_page: max(current_page - 1, 0),
+            RIGHT_EMOJI: lambda current_page: min(current_page + 1, self.last_page),
+            LAST_EMOJI: lambda _: self.last_page
+        }
+
+    @classmethod
+    def from_lines(cls, lines: t.Iterable[str], **kwargs) -> PaginatedEmbed:
+        """Creates a `PaginatedEmbed` with a `LinePaginator`."""
+        max_chars = kwargs.pop('max_chars', None)
+        max_lines = kwargs.pop('max_lines', None)
+        truncation_msg = kwargs.pop('truncation_msg', '...')
+        page_header = kwargs.pop('page_header', '')
+        page_prefix = kwargs.pop('page_prefix', '')
+        page_suffix = kwargs.pop('page_suffix', '')
+
+        paginator = LinePaginator(
+            lines=lines,
+            max_chars=max_chars,
+            max_lines=max_lines,
+            truncation_msg=truncation_msg,
+            page_header=page_header,
+            page_prefix=page_prefix,
+            page_suffix=page_suffix
+        )
+        return cls(pages=paginator, **kwargs)
+
+    async def paginate(
+        self,
+        ctx: Context,
+        message_content: t.Optional[str] = None,
+        owner: t.Optional[discord.Member] = None,
+        **message_kwargs
+    ) -> discord.Message:
+        """
+        Start pagination be sending the paginated embed to `ctx.channel'.
+
+        Add content to the message containing the embed by using the
+        `message_content` parameter. `message_kwargs` will also be
+        passed to `ctx.send`.
+
+        Restrict pagination to a specific user by providing an `owner`.
+        """
+        if 'embed' in message_kwargs:
+            log.warning(
+                'PaginatedEmbed.paginate does not support the `embed` kwarg.'
+            )
+            message_kwargs.pop('embed')
+
+        self.description = self.pages[self.current_page]
+
+        if len(self.pages) == 1:
+            # No need to paginate with only one page
+            return await ctx.send(message_content, embed=self, **message_kwargs)
+
+        self.owner = owner
+
+        self.set_footer()
+        self._message = await ctx.send(message_content, embed=self, **message_kwargs)
+        self._context = ctx
+
+        await self._start_interface()
+        return self._message
+
+    def check(self, reaction: discord.Reaction, user: discord.User) -> bool:
+        """Check if `reaction` is a valid pagination attempt for the embed."""
+        # Reaction on different message
+        if reaction.message.id != self._message.id:
+            return False
+
+        # Bot should not react to its own reactions
+        if user.id == self._context.bot.user.id:
+            return False
+
+        # User is not the owner of the embed
+        if self.owner and self.owner.id != user.id:
+            return False
+
+        # An unsupported emoji used
+        if str(reaction.emoji) not in PAGINATION_EMOJIS:
+            return False
+
+        # All tests have passed
+        log.trace(
+            f'{user} ({user.id}) used {reaction.emoji} to paginate {reaction.message.id}.'
+        )
+        return True
+
+    async def _start_interface(self) -> None:
+        """Start the pagination interface for the user."""
+        for emoji in PAGINATION_EMOJIS:
+            log.trace(f'Adding the pagination interface to message {self._message.id}')
+            await self._message.add_reaction(emoji)
+
+        while True:
+            try:
+                reaction, user = await self._context.bot.wait_for(
+                    'reaction_add',
+                    timeout=self.timeout,
+                    check=self.check
+                )
+                log.trace(f'Received pagination reaction {reaction} from user {user} ({user.id})')
+
+            except asyncio.TimeoutError:
+                log.trace(f'Pagination on message {self._message.id} stop due to timeout')
+                await self._close_interface()
+                return
+
+            if reaction.emoji == DELETE_EMOJI:
+                log.trace(f'{user} ({user.id}) closed the paginator for {self._message.id}')
+                await self._close_interface()
+                return
+
+            new_page = self.new_page_number[reaction.emoji](self.current_page)
+            if new_page != self.current_page:
+                self.current_page = new_page
+
+                if not await self._change_page():
+                    return
+
+            with suppress(discord.NotFound):
+                await self._message.remove_reaction(reaction.emoji, user)
+
+    async def _close_interface(self) -> None:
+        """Close the pagination interface."""
+        with suppress(discord.NotFound):
+            await self._message.clear_reactions()
+
+    async def _change_page(self) -> bool:
+        """Change the currently visible page in the embed."""
+        self.set_footer()
+        self.description = self.pages[self.current_page]
+
+        try:
+            await self._message.edit(content=self._message.content, embed=self)
+        except discord.NotFound:
+            log.debug(f'Cannot find message {self._message.id}')
+            return False
+
+        return True
+
+    async def set_footer(self, **kwargs) -> None:
+        """Set the footer text of the embed, including `text` and the page number."""
+        if len(self.pages) == 1:
+            # No need to set footer ourselves if there's one page
+            super().set_footer(**kwargs)
+
+        if 'text' in kwargs:
+            self._footer_text = kwargs.pop('text')
+
+        page = f'Page {self.current_page + 1} / {len(self.pages)}'
+        if self._footer_text:
+            text = f'{self._footer_text} ({page})'
+
+        super().set_footer(text=text, **kwargs)
