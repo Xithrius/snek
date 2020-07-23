@@ -1,4 +1,5 @@
 import logging
+import typing as t
 
 import discord
 from discord.ext import commands
@@ -20,11 +21,11 @@ class Syncer(Cog):
         self.role_syncer = RoleSyncer(bot)
         self.user_syncer = UserSyncer(bot)
 
-    async def sync(self) -> None:
+    async def sync(self, ctx: t.Optional[Context] = None) -> None:
         """Synchronise the guilds/roles/users with the database."""
-        await self.guild_syncer.sync()
-        await self.role_syncer.sync()
-        await self.user_syncer.sync()
+        await self.guild_syncer.sync(ctx)
+        await self.role_syncer.sync(ctx)
+        await self.user_syncer.sync(ctx)
 
     @Cog.listener()
     async def on_ready(self) -> None:
@@ -184,7 +185,7 @@ class Syncer(Cog):
             )
             await self.bot.api_client.patch(f'users/{after.id}', json=payload)
 
-    @commands.group(name='sync')
+    @commands.group(name='sync', invoke_without_command=True)
     async def sync_group(self, ctx: Context) -> None:
         """Run synchronisations between this bot and the Snek API manually."""
         await ctx.send_help(ctx.command)
@@ -203,6 +204,11 @@ class Syncer(Cog):
     async def sync_users_command(self, ctx: Context) -> None:
         """Manually synchronise cached users with the users in the API."""
         await self.user_syncer.sync(ctx)
+
+    @sync_group.command(name='all')
+    async def sync_all_command(self, ctx: Context) -> None:
+        """Manually synchronise guilds/roles/users with the API."""
+        await self.sync(ctx)
 
     async def cog_check(self, ctx: Context) -> bool:
         """Only allow the owner of the bot to invoke the commands in this cog."""
