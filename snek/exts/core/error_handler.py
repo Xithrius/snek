@@ -23,11 +23,14 @@ class ErrorHandler(Cog):
         Error handling is deferred to any local error handler, if present. This is done by
         checking for the presence of a `handled` attribute on the error.
         """
-        if hasattr(errors, 'handled'):
+        if hasattr(error, 'handled'):
             log.trace(f'Error from command {ctx.command} was handled locally; ignoring.')
             return
 
-        if isinstance(error, errors.UserInputError):
+        if isinstance(error, errors.CommandNotFound):
+            return
+
+        elif isinstance(error, errors.UserInputError):
             await self.handle_user_input_error(ctx, error)
 
         elif isinstance(error, errors.CheckFailure):
@@ -136,8 +139,10 @@ class ErrorHandler(Cog):
 
     async def handle_unexpected_error(self, ctx: Context, error: errors.CommandError) -> None:
         """Send a generic error message in `ctx.channel` and log the exeception."""
+        bot_owner = (await self.bot.application_info()).owner
+
         await ctx.send(
-            f'Sorry an unexpected error has occured. Please let {self.bot.owner.mention} know!\n'
+            f'Sorry an unexpected error has occured. Please let {bot_owner.mention} know!\n'
             f'```{type(error).__name__}: {error}```'
         )
 
