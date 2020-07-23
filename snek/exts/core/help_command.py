@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 COMMANDS_PER_PAGE = 8
 DELETE_EMOJI = '❌'
-PREFIX = '!'
 
 Category = namedtuple('Category', ('name', 'description', 'cogs'))
 
