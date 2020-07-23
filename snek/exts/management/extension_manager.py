@@ -53,3 +53,27 @@ class ExtensionManager(commands.Cog):
     async def extensions_group(self, ctx: Context) -> None:
         """Load, reload, unload, and list extensions."""
         await ctx.send_help(ctx.command)
+
+    @extensions_group.command(name='load', aliases=('l',))
+    async def load_command(self, ctx: Context, *extensions: Extension) -> None:
+        """
+        Load extensions given their name or full path.
+
+        If `*` is given, all unloaded extensions will be loaded.
+        """
+
+    @extensions_group.command(name='reload', aliases=('r',))
+    async def reload_command(self, ctx: Context, *extensions: Extension) -> None:
+        """
+        Reload extensions given their name or full path.
+
+        If `*` is given, all loaded extensions will be reloaded.
+        """
+
+    @extensions_group.command(name='unload', aliases=('ul',))
+    async def unload_command(self, ctx: Context, *extensions: Extension) -> None:
+        """
+        Unload extensions given their name or full path.
+
+        If `*` is given, all loaded extensions will be unloaded.
+        """
