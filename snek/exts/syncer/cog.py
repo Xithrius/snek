@@ -187,6 +187,7 @@ class Syncer(Cog):
     @commands.group(name='sync')
     async def sync_group(self, ctx: Context) -> None:
         """Run synchronisations between this bot and the Snek API manually."""
+        await ctx.send_help(ctx.command)
 
     @sync_group.command(name='guilds')
     async def sync_guilds_command(self, ctx: Context) -> None:
