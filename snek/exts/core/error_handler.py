@@ -119,20 +119,20 @@ class ErrorHandler(Cog):
     async def handle_snek_api_error(self, ctx: Context, error: ResponseCodeError) -> None:
         """Send an error message in `ctx.channel` for ResponseCodeError and log it."""
         if error.status == 404:
-            log.debug(f"API responded with 404 for command {ctx.command}")
+            log.debug(f"Snek API responded with 404 for command {ctx.command}")
             await ctx.send("There does not seem to be anything matching your query.")
 
         elif error.status == 400:
-            log.debug(f"API responded with 400 for command {ctx.command}: {error.response_json!r}")
-            await ctx.send("According to the API, your request is malformed.")
+            log.debug(f"Snek API responded with 400 for command {ctx.command}: {error.response_json!r}")
+            await ctx.send("According to the Snek API, your request is malformed.")
 
         elif 500 <= error.status < 600:
-            log.warning(f"API responded with {error.status} for command {ctx.command}")
-            await ctx.send("Sorry, there seems to be an internal issue with the API.")
+            log.warning(f"Snek API responded with {error.status} for command {ctx.command}")
+            await ctx.send("Sorry, there seems to be an internal issue with the Snek API.")
 
         else:
-            log.warning(f"Unexpected API response for command {ctx.command}: {error.status}")
-            await ctx.send(f"Received an unexpected status code from the API: `{error.status}`.")
+            log.warning(f"Unexpected response from Snek API for command {ctx.command}: {error.status}")
+            await ctx.send(f"Received an unexpected status code from the Snek API: `{error.status}`.")
 
     async def handle_unexpected_error(self, ctx: Context, error: errors.CommandError) -> None:
         """Send a generic error message in `ctx.channel` and log the exeception."""
