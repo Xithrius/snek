@@ -1,5 +1,6 @@
 import logging
 from pkgutil import iter_modules
+import typing as t
 
 from discord.ext import commands
 from discord.ext.commands import Context, group
@@ -77,6 +78,35 @@ class ExtensionManager(commands.Cog):
 
         If `*` is given, all loaded extensions will be unloaded.
         """
+
+    def manage(self, action: str, extension: str) -> t.Tuple[str, t.Optional[str]]:
+        """
+        Apply an action to an extension.
+
+        Returns the status message and any error message.
+        """
+        verb = action.lower()
+        error_msg = None
+
+        try:
+            self.actions[action](extension)
+        except (commands.ExtensionAlreadyLoaded, commands.ExtensionNotLoaded):
+            msg = f'❌ Extension `{extension}` is already {verb}ed.'
+            log.debug(msg[2:])
+
+        except Exception as err:
+            if hasattr(err, 'original'):
+                err = err.original
+
+            log.exception(f'Extension {extension} failed to {verb}.')
+
+            error_msg = f'{type(err).__name__}: {err}'
+            msg = f'❌ Failed to {verb} extension `{extension}`:\n```{error_msg}```'
+        else:
+            msg = f'✅ Extension successfully {verb}ed: `{extension}`.'
+            log.debug(msg[2:])
+
+        return msg, error_msg
 
     async def cog_check(self, ctx: Context) -> bool:
         """Only allow the owner of the bot to invoke the commands in this cog."""
