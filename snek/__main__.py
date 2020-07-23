@@ -17,6 +17,7 @@ snek = Snek(
 )
 
 # Load extensions
+snek.load_extension('snek.exts.core')
 snek.load_extension('snek.exts.ping')
 snek.load_extension('snek.exts.syncer')
 
