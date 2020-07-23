@@ -2,7 +2,9 @@ import logging
 from pkgutil import iter_modules
 
 from discord.ext import commands
-from discord.ext.commands import Context
+from discord.ext.commands import Context, group
+
+from snek.bot import Snek
 
 log = logging.getLogger(__name__)
 
@@ -37,3 +39,11 @@ class Extension(commands.Converter):
 
 class ExtensionManager(commands.Cog):
     """Extension management commands."""
+
+    def __init__(self, bot: Snek) -> None:
+        self.bot = bot
+
+    @group(name='extensions', aliases=('ext', 'exts', 'c', 'cog', 'cogs'), invoke_with_command=True)
+    async def extensions_group(self, ctx: Context) -> None:
+        """Load, reload, unload, and list extensions."""
+        await ctx.send_help(ctx.command)
