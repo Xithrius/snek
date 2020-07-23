@@ -1,4 +1,5 @@
 import logging
+import typing as t
 
 from discord.ext.commands import Cog, Context, errors
 
@@ -50,8 +51,48 @@ class ErrorHandler(Cog):
             f'Command {ctx.command} invoked by {ctx.message.author} with error {type(error).__name__}: {error}'
         )
 
+    @staticmethod
+    def get_help_command(ctx: Context) -> t.Coroutine:
+        """Return a `help` command invocation coroutine."""
+        if ctx.command:
+            return ctx.send_help(ctx.command)
+
+        return ctx.send_help()
+
     async def handle_user_input_error(self, ctx: Context, error: errors.UserInputError) -> None:
-        pass
+        """
+        Send an error message in `ctx.channel` for UserInputError.
+
+        - MissingRequiredArgument: send an error message with arg name and the help command
+        - TooManyArguments: send an error message and the help command
+        - BadArgument: send an error message and the help command
+        - BadUnionArgument: send an error message including the error produced by the last converter
+        - ArgumentParsingError: send an error message
+        - Other: send an error message and the help command
+        """
+        help_command = self.get_help_command(ctx)
+
+        if isinstance(error, errors.MissingRequiredArgument):
+            await ctx.send(f"Missing required argument: `{error.param.name}`.")
+            await help_command
+
+        elif isinstance(error, errors.TooManyArguments):
+            await ctx.send("Too many arguments provided.")
+            await help_command
+
+        elif isinstance(error, errors.BadArgument):
+            await ctx.send("Bad argument: Please double-check your input arguments and try again.")
+            await help_command
+
+        elif isinstance(error, errors.BadUnionArgument):
+            await ctx.send(f"Bad argument: {error}\n```{error.errors[-1]}```")
+
+        elif isinstance(error, errors.ArgumentParsingError):
+            await ctx.send(f"Argument parsing error: {error}")
+
+        else:
+            await ctx.send("Something about your input seems off.")
+            await help_command
 
     async def handle_check_failure(self, ctx: Context, error: errors.CheckFailure) -> None:
         pass
