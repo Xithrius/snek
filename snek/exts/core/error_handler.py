@@ -135,4 +135,10 @@ class ErrorHandler(Cog):
             await ctx.send(f"Received an unexpected status code from the API: `{error.status}`.")
 
     async def handle_unexpected_error(self, ctx: Context, error: errors.CommandError) -> None:
-        pass
+        """Send a generic error message in `ctx.channel` and log the exeception."""
+        await ctx.send(
+            f'Sorry an unexpected error has occured. Please let {self.bot.owner.mention} know!\n'
+            f'```{type(error).__name__}: {error}```'
+        )
+
+        log.error(f"Error executing command invoked by {ctx.message.author}: {ctx.message.content}", exc_info=error)
