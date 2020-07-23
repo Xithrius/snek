@@ -77,3 +77,7 @@ class ExtensionManager(commands.Cog):
 
         If `*` is given, all loaded extensions will be unloaded.
         """
+
+    async def cog_check(self, ctx: Context) -> bool:
+        """Only allow the owner of the bot to invoke the commands in this cog."""
+        return await self.bot.is_owner(ctx.author)
