@@ -64,6 +64,15 @@ class ExtensionManager(commands.Cog):
 
         If `*` is given, all unloaded extensions will be loaded.
         """
+        if not extensions:
+            await ctx.send_help(ctx.command)
+            return
+
+        if '*' in extensions:
+            extensions = EXTENSIONS - set(self.bot.extensions)
+
+        msg = self.multi_manage('LOAD', *extensions)
+        await ctx.send(msg)
 
     @extensions_group.command(name='reload', aliases=('r',))
     async def reload_command(self, ctx: Context, *extensions: Extension) -> None:
