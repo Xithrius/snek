@@ -139,10 +139,8 @@ class ErrorHandler(Cog):
 
     async def handle_unexpected_error(self, ctx: Context, error: errors.CommandError) -> None:
         """Send a generic error message in `ctx.channel` and log the exeception."""
-        bot_owner = (await self.bot.application_info()).owner
-
         await ctx.send(
-            f'Sorry, an unexpected error has occured. Please let {bot_owner.mention} know!\n'
+            f'Sorry, an unexpected error has occured. Please let us know!\n'
             f'```{type(error).__name__}: {error}```'
         )
 
