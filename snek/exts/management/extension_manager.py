@@ -142,7 +142,7 @@ class ExtensionManager(commands.Cog):
             if error is not None:
                 failures[ext] = error
 
-        msg = f'{"❌" if failures else "✅"} {len(extensions) - len(failures)} / {len(extensions)} extensions {verb}ed.'
+        msg = f'{"❌" if failures else "✅"} {len(extensions) - len(failures)}/{len(extensions)} extensions {verb}ed.'
 
         if failures:
             failures = '\n'.join(f'{ext}:\n    {err}' for ext, err in failures.items())
