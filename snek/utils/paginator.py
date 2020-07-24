@@ -30,7 +30,7 @@ class LinePaginator(Sequence):
     def __init__(
         self,
         lines: t.Iterable[str],
-        max_chars: t.Optional[int] = None,
+        max_chars: int = 2000,
         max_lines: t.Optional[int] = None,
         truncation_msg: str = '...',
         page_header: str = '',
