@@ -5,6 +5,7 @@ import discord
 from discord.ext.commands import when_mentioned_or
 
 from snek.bot import Snek
+from snek.exts import EXTENSIONS
 
 log = logging.getLogger(__name__)
 
@@ -17,11 +18,14 @@ snek = Snek(
 )
 
 # Load extensions
-snek.load_extension('snek.exts.config')
-snek.load_extension('snek.exts.core')
-snek.load_extension('snek.exts.management')
-snek.load_extension('snek.exts.ping')
-snek.load_extension('snek.exts.syncer')
+for extension in sorted(EXTENSIONS):
+    snek.load_extension(extension)
+
+# snek.load_extension('snek.exts.config')
+# snek.load_extension('snek.exts.core')
+# snek.load_extension('snek.exts.management')
+# snek.load_extension('snek.exts.ping')
+# snek.load_extension('snek.exts.syncer')
 
 log.info('Snek starting..')
 snek.run(os.environ.get('SNEK_BOT_TOKEN'))

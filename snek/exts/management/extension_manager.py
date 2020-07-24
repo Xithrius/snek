@@ -1,5 +1,4 @@
 import logging
-from pkgutil import iter_modules
 import typing as t
 
 import discord
@@ -7,14 +6,12 @@ from discord.ext import commands
 from discord.ext.commands import Context, group
 
 from snek.bot import Snek
+from snek.exts import EXTENSIONS
 from snek.utils import PaginatedEmbed
 
 log = logging.getLogger(__name__)
 
 UNLOAD_BLACKLIST = {'snek.exts.management'}
-EXTENSIONS = frozenset(
-    ext.name for ext in iter_modules(('snek/exts',), 'snek.exts.')
-)
 
 
 class Extension(commands.Converter):
