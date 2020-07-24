@@ -62,7 +62,7 @@ class ExtensionManager(commands.Cog):
         """
         Load extensions given their name or full path.
 
-        If `*` is given, all unloaded extensions will be loaded.
+        If '\\*' is given, all unloaded extensions will be loaded.
         """
         if not extensions:
             await ctx.send_help(ctx.command)
@@ -79,7 +79,7 @@ class ExtensionManager(commands.Cog):
         """
         Reload extensions given their name or full path.
 
-        If `*` is given, all loaded extensions will be reloaded.
+        If '\\*' is given, all loaded extensions will be reloaded.
         """
         if not extensions:
             await ctx.send_help(ctx.command)
@@ -96,7 +96,7 @@ class ExtensionManager(commands.Cog):
         """
         Unload extensions given their name or full path.
 
-        If `*` is given, all loaded extensions will be unloaded.
+        If '\\*' is given, all loaded extensions will be unloaded.
         """
         if not extensions:
             await ctx.send_help(ctx.command)
