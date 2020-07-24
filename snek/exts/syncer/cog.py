@@ -146,10 +146,23 @@ class Syncer(Cog):
                 f'Updated roles for user {after.name} ({after.id}) in guild {after.guild.name} ({after.guild.id})'
             )
 
-            await self.bot.api_client.patch(
-                f'users/{after.id}',
-                json={'roles': sorted(role.id for role in after.roles)}
-            )
+            member_info = await self.bot.api_client.get(f'users/{after.id}')
+
+            before_roles = set(role.id for role in before.roles)
+            after_roles = set(role.id for role in after.roles)
+            roles = member_info['roles']
+
+            added = after_roles - before_roles
+            if added:
+                roles.extend(added)
+
+            deleted = before_roles - after_roles
+            if deleted:
+                for role in deleted:
+                    roles.remove(role)
+
+            # There must either be a role added or removed, so both situations have been handled
+            await self.bot.api_client.patch(f'users/{after.id}', json={'roles': roles})
 
     @Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
