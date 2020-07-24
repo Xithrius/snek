@@ -192,3 +192,9 @@ class ExtensionManager(commands.Cog):
     async def cog_check(self, ctx: Context) -> bool:
         """Only allow the owner of the bot to invoke the commands in this cog."""
         return await self.bot.is_owner(ctx.author)
+
+    async def cog_command_error(self, ctx: Context, error: Exception) -> None:
+        """Handle BadArgument errors locally."""
+        if isinstance(error, commands.BadArgument):
+            await ctx.send(str(error))
+            error.handled = True
