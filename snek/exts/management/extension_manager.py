@@ -80,6 +80,21 @@ class ExtensionManager(commands.Cog):
 
         If `*` is given, all loaded extensions will be unloaded.
         """
+        if not extensions:
+            await ctx.send_help(ctx.command)
+            return
+
+        blacklisted = '\n'.join(UNLOAD_BLACKLIST & set(extensions))
+
+        if blacklisted:
+            msg = f'❌ The following extensions cannot be unloaded:\n```{blacklisted}```'
+        else:
+            if '*' in extensions:
+                extensions = set(self.bot.extensions) - UNLOAD_BLACKLIST
+
+            msg = self.multi_manage('UNLOAD', *extensions)
+
+        await ctx.send(msg)
 
     @extensions_group.command(name='list', aliases=('all',))
     async def list_command(self, ctx: Context) -> None:
