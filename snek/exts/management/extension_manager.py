@@ -2,10 +2,12 @@ import logging
 from pkgutil import iter_modules
 import typing as t
 
+import discord
 from discord.ext import commands
 from discord.ext.commands import Context, group
 
 from snek.bot import Snek
+from snek.utils import PaginatedEmbed
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ class ExtensionManager(commands.Cog):
             'UNLOAD': self.bot.unload_extension
         }
 
-    @group(name='extensions', aliases=('ext', 'exts', 'c', 'cog', 'cogs'), invoke_with_command=True)
+    @group(name='extensions', aliases=('ext', 'exts', 'c', 'cog', 'cogs'), invoke_without_command=True)
     async def extensions_group(self, ctx: Context) -> None:
         """Load, reload, unload, and list extensions."""
         await ctx.send_help(ctx.command)
@@ -78,6 +80,29 @@ class ExtensionManager(commands.Cog):
 
         If `*` is given, all loaded extensions will be unloaded.
         """
+
+    @extensions_group.command(name='list', aliases=('all',))
+    async def list_command(self, ctx: Context) -> None:
+        """
+        Lists all extensions and their statuses.
+
+        Red indicates that the extension is unloaded.
+        Green indicates that the extension is loaded.
+        """
+        lines = list()
+
+        # Alphabetical order
+        for ext in sorted(EXTENSIONS):
+            status = '🟢' if ext in self.bot.extensions else '🔴'
+            ext_name = ext.rsplit('.', maxsplit=1)[1]
+            lines.append(f'{status} {ext_name}')
+
+        embed = PaginatedEmbed.from_lines(lines, max_lines=12)
+        embed.color = discord.Color.blurple()
+        embed.set_author(name='Extensions List', icon_url=str(self.bot.user.avatar_url))
+
+        log.trace(f'{ctx.author} requested a list of all extensions.')
+        await embed.paginate(ctx)
 
     def multi_manage(self, action: str, *extensions: str) -> str:
         """Apply an action to multiple extensions and return the results."""
