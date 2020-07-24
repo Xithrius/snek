@@ -142,7 +142,7 @@ class ErrorHandler(Cog):
         bot_owner = (await self.bot.application_info()).owner
 
         await ctx.send(
-            f'Sorry an unexpected error has occured. Please let {bot_owner.mention} know!\n'
+            f'Sorry, an unexpected error has occured. Please let {bot_owner.mention} know!\n'
             f'```{type(error).__name__}: {error}```'
         )
 
