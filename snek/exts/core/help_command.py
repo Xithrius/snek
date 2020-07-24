@@ -156,7 +156,7 @@ class CustomHelpCommand(HelpCommand):
 
         # Show aliases
         aliases = ', '.join(
-            f'`{alias}`' if not parent else f'`{parent} alias`'
+            f'`{alias}`' if not parent else f'`{parent} {alias}`'
             for alias in command.aliases
         )
         if aliases:
