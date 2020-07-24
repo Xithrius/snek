@@ -148,7 +148,7 @@ class LinePaginator(Sequence):
 
     def start_page(self) -> None:
         """Close a page once it's been created and start a new one."""
-        if self.create_page:
+        if self.current_page:
             self.current_page.append(self.page_suffix)
             self.pages.append('\n'.join(self.current_page))
 
