@@ -195,7 +195,7 @@ class PaginatedEmbed(discord.Embed):
     @classmethod
     def from_lines(cls, lines: t.Iterable[str], **kwargs) -> PaginatedEmbed:
         """Creates a `PaginatedEmbed` with a `LinePaginator`."""
-        max_chars = kwargs.pop('max_chars', None)
+        max_chars = kwargs.pop('max_chars', 2000)
         max_lines = kwargs.pop('max_lines', None)
         truncation_msg = kwargs.pop('truncation_msg', '...')
         page_header = kwargs.pop('page_header', '')
