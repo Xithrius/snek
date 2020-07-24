@@ -21,11 +21,5 @@ snek = Snek(
 for extension in sorted(EXTENSIONS):
     snek.load_extension(extension)
 
-# snek.load_extension('snek.exts.config')
-# snek.load_extension('snek.exts.core')
-# snek.load_extension('snek.exts.management')
-# snek.load_extension('snek.exts.ping')
-# snek.load_extension('snek.exts.syncer')
-
 log.info('Snek starting..')
 snek.run(os.environ.get('SNEK_BOT_TOKEN'))
