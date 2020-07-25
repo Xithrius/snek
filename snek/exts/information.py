@@ -2,6 +2,7 @@ from collections import Counter
 from datetime import datetime
 import logging
 import textwrap
+import typing as t
 
 import discord
 from discord.ext.commands import Cog, Context, command
@@ -53,6 +54,43 @@ class Information(Cog):
         """)
 
         await ctx.send(embed=embed)
+
+    @command(name='role', aliases=('roleinfo',))
+    async def role_info(self, ctx: Context, *roles: t.Union[discord.Role, str]) -> None:
+        """Returns information about role(s)."""
+        parsed_roles = list()
+        failed_roles = list()
+
+        for role in roles:
+            if isinstance(role, discord.Role):
+                parsed_roles.append(role)
+                continue
+
+            role_obj = discord.utils.find(lambda r: r.name.lower() == role.lower(), ctx.guild.roles)
+
+            if role_obj:
+                parsed_roles.append(role_obj)
+                continue
+
+            failed_roles.append(role)
+
+        if failed_roles:
+            await ctx.send(f'❌ Could not find these roles: {", ".join(failed_roles)}')
+
+        for role in parsed_roles:
+            embed = discord.Embed(
+                title=f'{role.name} Role',
+                color=role.color
+            )
+
+            embed.add_field(name='ID', value=role.id, inline=True)
+            embed.add_field(name='Color (RGB)', value=f'#{role.color.value:0>6x}', inline=True)
+            embed.add_field(name='Permissions Code', value=role.permissions.value, inline=True)
+            embed.add_field(name='Member Count', value=len(role.members), inline=True)
+            embed.add_field(name='Position', value=role.position, inline=True)
+            embed.add_field(name='Creation Date', value=datetime.strftime(role.created_at, r'%B %m, %Y'), inline=True)
+
+            await ctx.send(embed=embed)
 
 
 def setup(bot: Snek) -> None:
