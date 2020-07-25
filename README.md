@@ -103,6 +103,13 @@ This is what's currently planned for Snek.
     - [ ] Get
     - [ ] Delete
 
+- [ ] Fun Extension/Cog
+    - [ ] Uwu
+    - [ ] Random case
+    - [ ] 8ball
+    - [ ] Flip a coin
+    - [ ] Roll a die
+
 - [ ] DEFCON Extension
 
     - [ ] Verification Cog
