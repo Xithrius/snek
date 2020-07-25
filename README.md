@@ -23,7 +23,14 @@ This here is what's currently planned for Snek.
     - [ ] User information
     - [ ] Role information
     - [ ] Guild information
-    - [ ] Bot/API source code
+    - [ ] Bot information
+        - [ ] Uptime
+        - [ ] Lines of code
+        - [ ] Repository
+    - [ ] Site/API information
+        - [ ] Homepage
+        - [ ] Dashboard
+        - [ ] Repository
 
 - [ ] Moderation Extension
 
