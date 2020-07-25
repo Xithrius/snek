@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ced7203c8fd43e354cb06d72954b902f8a7e76eb49e835018c89ea9332dc4ed9"
+            "sha256": "ac175270a6d7981901d92cc5841592778d207d5085e6b7dcea7d78ea420ad759"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -98,12 +98,8 @@
             "version": "==8.2"
         },
         "humanize": {
-            "hashes": [
-                "sha256:89062c6db8601693b7d223443d0d7529aa9577df43a1387ddd4b9c273abb4a51",
-                "sha256:8a68bd9bccb899fd9bfb1e6d96c1e84e4475551cc9a5b5bdbd69b9b1cfd19c80"
-            ],
-            "index": "pypi",
-            "version": "==2.5.0"
+            "git": "https://github.com/jmoiron/humanize.git",
+            "ref": "15ecb0a778b38925bf8188bd1ca6be95b54ed1cc"
         },
         "idna": {
             "hashes": [
