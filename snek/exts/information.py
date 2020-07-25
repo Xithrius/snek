@@ -9,6 +9,7 @@ from discord.ext.commands import Cog, Context, command
 import humanize
 
 from snek.bot import Snek
+from snek.utils import PaginatedEmbed
 
 log = logging.getLogger(__name__)
 
@@ -91,6 +92,22 @@ class Information(Cog):
             embed.add_field(name='Creation Date', value=datetime.strftime(role.created_at, r'%B %m, %Y'), inline=True)
 
             await ctx.send(embed=embed)
+
+    @command(name='roles')
+    async def role_list(self, ctx: Context) -> None:
+        """Returns a list of all roles in the guild."""
+        # Sort roles alphabetically and skip @everyone
+        roles = sorted(ctx.guild.roles[1:], key=lambda role: role.name)
+        role_list = [f'`{role.id}` - {role.mention}' for role in roles]
+
+        embed = PaginatedEmbed.from_lines(
+            role_list,
+            max_lines=8,
+            title=f'Roles ({len(roles)} total)',
+            color=discord.Color.blurple()
+        )
+
+        await embed.paginate(ctx)
 
 
 def setup(bot: Snek) -> None:
