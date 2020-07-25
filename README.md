@@ -129,7 +129,7 @@ This is what's currently planned for Snek.
         - [ ] Level 4: None
         - [ ] Level 5: None
 
-- [ ] Remote Control Cog
+- [ ] Remote Control Extension/Cog
     - Control the bot from a web dashboard
     - Establishes a websocket connection to the site
     - Execute commands, see guild statistics, check user info, etc. from the dashboard
