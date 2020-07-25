@@ -2,7 +2,7 @@
 The ultimate utility bot.
 
 # Roadmap
-This here is what's currently planned for Snek.
+This is what's currently planned for Snek.
 
 - [ ] Management Extension
     - [ ] Extension Manager Cog
