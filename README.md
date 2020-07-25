@@ -124,6 +124,10 @@ This is what's currently planned for Snek.
 
     - [ ] Lockdown Cog
         - [ ] Level 1: Server-wide lockdown, only mods+ can speak
+        - [ ] Level 2: None
+        - [ ] Level 3: None
+        - [ ] Level 4: None
+        - [ ] Level 5: None
 
 - [ ] Remote Control Cog
     - Control the bot from a web dashboard
