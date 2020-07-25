@@ -4,20 +4,20 @@ The ultimate utility bot.
 # Roadmap
 This is what's currently planned for Snek.
 
-- [ ] Management Extension
-    - [ ] Extension Manager Cog
-        - [ ] Load
-        - [ ] Reload
-        - [ ] Unload
-        - [ ] List
+- [x] Management Extension
+    - [x] Extension Manager Cog
+        - [x] Load
+        - [x] Reload
+        - [x] Unload
+        - [x] List
 
-- [ ] Syncer Extension
-    - [ ] Syncer Cog (Syncs data with the Snek API)
-        - [ ] Sync guilds command
-        - [ ] Sync roles command
-        - [ ] Sync users command
-        - [ ] Resync at bot startup
-        - [ ] Auto updates (Listen to events and update dynamically)
+- [x] Syncer Extension
+    - [x] Syncer Cog (Syncs data with the Snek API)
+        - [x] Sync guilds command
+        - [x] Sync roles command
+        - [x] Sync users command
+        - [x] Resync at bot startup
+        - [x] Auto updates (Listen to events and update dynamically)
 
 - [ ] Information Extension/Cog
     - [ ] User information
