@@ -110,6 +110,9 @@ This is what's currently planned for Snek.
     - [ ] Flip a coin
     - [ ] Roll a die
 
+- [ ] Source Extension/Cog
+    - Sends the link to the source of a command/cog (Use the inspect module)
+
 - [ ] DEFCON Extension
 
     - [ ] Verification Cog
