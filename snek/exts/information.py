@@ -4,6 +4,7 @@ import logging
 import textwrap
 import typing as t
 
+import dateutil.parser
 import discord
 from discord.ext.commands import Cog, Context, command
 import humanize
@@ -110,7 +111,7 @@ class Information(Cog):
         await embed.paginate(ctx)
 
     @command(name='user', aliases=('userinfo', 'member', 'memberinfo'))
-    async def user_info(self, ctx: Context, user: t.Optional[t.Union[discord.Member, discord.User]]) -> None:
+    async def user_info(self, ctx: Context, user: t.Optional[t.Union[discord.Member, discord.User, int]]) -> None:
         """Returns information about a user."""
         if user is None:
             user = ctx.author
@@ -118,8 +119,8 @@ class Information(Cog):
         embed = None
         if isinstance(user, discord.Member):
             embed = await self.create_member_embed(ctx, user)
-        elif isinstance(user, discord.User):
-            pass
+        elif isinstance(user, (discord.User, int)):
+            embed = await self.create_user_embed(ctx, user)
 
         await ctx.send(embed=embed)
 
@@ -202,6 +203,46 @@ class Information(Cog):
         )
 
         embed.set_thumbnail(url=str(user.avatar_url))
+        return embed
+
+    async def create_user_embed(self, ctx: Context, user: t.Union[discord.User, int]) -> discord.Embed:
+        """Creates an embed containing information saved in the database about a user."""
+        if isinstance(user, int):
+            user = await self.bot.api_client.get(f'users/{user}')
+            created = dateutil.parser.isoparse(user['created_at']).replace(tzinfo=None)
+
+            username = f'{user["name"]} (saved)'
+
+            created_delta = humanize.precisedelta(created, minimum_unit='days', format=r'%0.0f', )
+            created_at = datetime.strftime(created, r'%B %m, %Y')
+            mention = f'<@{user["id"]}>'
+            user_id = user['id']
+
+            avatar_url = user['avatar_url']
+
+        else:
+            username = str(user)
+
+            created_delta = humanize.precisedelta(user.created_at, minimum_unit='days', format=r'%0.0f')
+            created_at = datetime.strftime(user.created_at, r'%B %m, %Y')
+            mention = user.mention
+            user_id = user.id
+
+            avatar_url = str(user.avatar_url)
+
+        description = textwrap.dedent(f"""
+            **User Information**
+            Created: {created_delta} ago ({created_at})
+            Profile: {mention}
+            ID: {user_id}
+        """)
+
+        embed = discord.Embed(
+            title=username,
+            description=description
+        )
+
+        embed.set_thumbnail(url=avatar_url)
         return embed
 
 
