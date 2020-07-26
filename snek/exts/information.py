@@ -114,7 +114,7 @@ class Information(Cog):
         await embed.paginate(ctx)
 
     @command(name='user', aliases=('userinfo', 'member', 'memberinfo'))
-    async def user_info(self, ctx: Context, user: t.Optional[t.Union[discord.Member, discord.User, int]]) -> None:
+    async def user_info(self, ctx: Context, user: t.Optional[t.Union[discord.Member, discord.User, int, str]]) -> None:
         """Returns information about a user."""
         if user is None:
             user = ctx.author
@@ -122,7 +122,7 @@ class Information(Cog):
         embed = None
         if isinstance(user, discord.Member):
             embed = await self.create_member_embed(ctx, user)
-        elif isinstance(user, (discord.User, int)):
+        elif isinstance(user, (discord.User, int, str)):
             embed = await self.create_user_embed(ctx, user)
 
         await ctx.send(embed=embed)
@@ -208,10 +208,32 @@ class Information(Cog):
         embed.set_thumbnail(url=str(user.avatar_url))
         return embed
 
-    async def create_user_embed(self, ctx: Context, user: t.Union[discord.User, int]) -> discord.Embed:
+    async def create_user_embed(self, ctx: Context, user: t.Union[discord.User, int, str]) -> discord.Embed:
         """Creates an embed containing information saved in the database about a user."""
-        if isinstance(user, int):
-            user = await self.bot.api_client.get(f'users/{user}')
+        if isinstance(user, (int, str)):
+
+            if isinstance(user, int):
+                user = await self.bot.api_client.get(f'users/{user}')
+
+            else:
+                if '#' in user:
+                    name, discrim = user.rsplit('#', maxsplit=1)
+                    users = await self.bot.api_client.get(
+                        'users/',
+                        params={'name': name, 'discriminator': discrim}
+                    )
+
+                else:
+                    users = await self.bot.api_client.get(
+                        'users/',
+                        params={'name': user}
+                    )
+
+                if not users:
+                    raise discord.ext.commands.BadArgument
+
+                user = users[0]
+
             created = dateutil.parser.isoparse(user['created_at']).replace(tzinfo=None)
 
             username = f'{user["name"]}#{user["discriminator"]}'
