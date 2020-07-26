@@ -250,7 +250,7 @@ class Information(Cog):
 
     @command(name='bot', aliases=('botinfo', 'invite', 'uptime'))
     async def info_bot(self, ctx: Context) -> None:
-        """Sends the invite link for this bot."""
+        """Returns information about this bot."""
         embed = discord.Embed(color=discord.Color.blurple())
         embed.set_author(
             name='Snek',
