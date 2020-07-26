@@ -38,6 +38,7 @@ class Syncer(Cog):
         payload = {
             'id': guild.id,
             'name': guild.name,
+            'created_at': str(guild.created_at),
             'icon_url': str(guild.icon_url)
         }
 
@@ -79,6 +80,7 @@ class Syncer(Cog):
                 'id': role.id,
                 'color': role.color.value,
                 'name': role.name,
+                'created_at': str(role.created_at),
                 'permissions': role.permissions.value,
                 'position': role.position,
                 'guild': role.guild.id
@@ -121,6 +123,7 @@ class Syncer(Cog):
             'id': member.id,
             'name': member.name,
             'discriminator': member.discriminator,
+            'created_at': str(member.created_at),
             'avatar_url': str(member.avatar_url),
             'roles': sorted(role.id for role in member.roles),
             'guilds': [guild.id for guild in self.bot.guilds if guild.get_member(member.id) is not None]
