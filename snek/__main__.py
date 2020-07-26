@@ -17,6 +17,8 @@ snek = Snek(
     max_messages=10_000
 )
 
+snek.check(lambda ctx: not ctx.author.bot)
+
 # Load extensions
 for extension in sorted(EXTENSIONS):
     snek.load_extension(extension)
