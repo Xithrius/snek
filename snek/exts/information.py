@@ -109,6 +109,101 @@ class Information(Cog):
 
         await embed.paginate(ctx)
 
+    @command(name='user', aliases=('userinfo', 'member', 'memberinfo'))
+    async def user_info(self, ctx: Context, user: t.Optional[t.Union[discord.Member, discord.User]]) -> None:
+        """Returns information about a user."""
+        if user is None:
+            user = ctx.author
+
+        embed = None
+        if isinstance(user, discord.Member):
+            embed = await self.create_member_embed(ctx, user)
+        elif isinstance(user, discord.User):
+            pass
+
+        await ctx.send(embed=embed)
+
+    async def create_member_embed(self, ctx: Context, user: discord.Member) -> discord.Embed:
+        """Creates an embed containing information about a member of the guild."""
+        created_delta = humanize.precisedelta(user.created_at, minimum_unit='days', format=r'%0.0f')
+        created_at = datetime.strftime(user.created_at, r'%B %m, %Y')
+
+        activity = ''
+        activity_obj = user.activity
+
+        if activity_obj is not None:
+
+            if activity_obj.type is discord.ActivityType.custom:
+                if (emoji := activity_obj.emoji) is not None:
+                    activity += f'{emoji} '
+
+                activity += activity_obj.name
+
+            elif activity_obj.type is discord.ActivityType.streaming:
+                activity = f'Streaming [{activity_obj.name}]({activity_obj.url}) on {activity_obj.platform}'
+
+            elif activity_obj.type is discord.ActivityType.playing:
+                activity = f'Playing {activity_obj.name}'
+
+            elif activity_obj.type is discord.ActivityType.listening:
+                BAR_LENGTH = 30
+
+                total_length = int((activity_obj.end - activity_obj.start).total_seconds())
+
+                # This is not always 100% accurate
+                # If the user skips forward/backwards in the song, this will be incorrect
+                # This is the best we can do for now
+                duration_played = int((datetime.utcnow() - activity_obj.created_at).total_seconds())
+
+                left = int(BAR_LENGTH * duration_played // total_length)
+                right = BAR_LENGTH - left
+
+                activity = (
+                    f'<:spotify:736739861674852464> Listening to [{activity_obj.title}]'
+                    f'(https://open.spotify.com/track/{activity_obj.track_id})'
+                    f' by {", ".join(activity_obj.artists)}\n'
+                    f'`{"▬" * left}🔘{"▬" * right}`'
+                )
+
+            else:
+                # Shouldn't get here, but just in case
+                activity = str(activity_obj)
+
+        title = str(user)
+        if user.nick:
+            title = f'{user.nick} ({title})'
+
+        joined_delta = humanize.precisedelta(user.joined_at, minimum_unit='days', format=r'%0.0f')
+        joined_at = datetime.strftime(user.joined_at, r'%B %m, %Y')
+
+        # Skip @everyone
+        roles = ', '.join(role.mention for role in user.roles[1:])
+
+        description = ''
+
+        if activity:
+            description += f'{activity}\n'
+
+        description += textwrap.dedent(f"""
+            **User Information**
+            Created: {created_delta} ago ({created_at})
+            Profile: {user.mention}
+            ID: {user.id}
+
+            **Member Information**
+            Joined: {joined_delta} ago ({joined_at})
+            Roles: {roles or None}
+        """)
+
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=user.top_role.color
+        )
+
+        embed.set_thumbnail(url=str(user.avatar_url))
+        return embed
+
 
 def setup(bot: Snek) -> None:
     """Load the `Information` cog."""
