@@ -123,7 +123,9 @@ class ExtensionManager(commands.Cog):
 
         # Alphabetical order
         for ext in sorted(EXTENSIONS):
-            status = '🟢' if ext in self.bot.extensions else '🔴'
+            status = '<:status_online:736459107363455016>' if ext in self.bot.extensions \
+                else '<:status_dnd:736459149600358522>'
+
             ext_name = ext.rsplit('.', maxsplit=1)[1]
             lines.append(f'{status} {ext_name}')
 
