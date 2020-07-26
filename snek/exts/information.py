@@ -1,6 +1,5 @@
 from collections import Counter
 from datetime import datetime
-import logging
 import textwrap
 import typing as t
 
@@ -14,8 +13,6 @@ import humanize
 from snek import start_time, LOC
 from snek.bot import Snek
 from snek.utils import PaginatedEmbed
-
-log = logging.getLogger(__name__)
 
 
 class Information(Cog):
