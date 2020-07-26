@@ -278,6 +278,26 @@ class Information(Cog):
 
         await ctx.send(embed=embed)
 
+    @command(name='site', aliases=('siteinfo', 'dash', 'dashboard'))
+    async def site_info(self, ctx: Context) -> None:
+        """Returns information about the Snek Site."""
+        embed = discord.Embed(color=discord.Color.blurple())
+        embed.set_author(
+            name='Snek Site',
+            url='https://sneknetwork.com',
+            icon_url=str(self.bot.user.avatar_url)
+        )
+
+        site = 'https://sneknetwork.com'
+        source = 'https://github.com/Snek-Network/snek-site'
+
+        embed.add_field(name='Source Code', value=f'[GitHub Link]({source})')
+        embed.add_field(name='Snek Site', value=f'[Site Link]({site})', inline=False)
+
+        embed.set_thumbnail(url=str(self.bot.user.avatar_url))
+
+        await ctx.send(embed=embed)
+
 
 def setup(bot: Snek) -> None:
     """Load the `Information` cog."""
