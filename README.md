@@ -19,18 +19,18 @@ This is what's currently planned for Snek.
         - [x] Resync at bot startup
         - [x] Auto updates (Listen to events and update dynamically)
 
-- [ ] Information Extension/Cog
-    - [ ] User information
-    - [ ] Role information
-    - [ ] Guild information
-    - [ ] Bot information
-        - [ ] Uptime
+- [x] Information Extension/Cog
+    - [x] User information
+    - [x] Role information
+    - [x] Guild information
+    - [x] Bot information
+        - [x] Uptime
         - [ ] Lines of code
-        - [ ] Repository
-    - [ ] Site/API information
-        - [ ] Homepage
+        - [x] Repository
+    - [x] Site/API information
+        - [x] Homepage
         - [ ] Dashboard
-        - [ ] Repository
+        - [x] Repository
 
 - [ ] Moderation Extension
 
