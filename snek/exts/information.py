@@ -211,7 +211,7 @@ class Information(Cog):
             user = await self.bot.api_client.get(f'users/{user}')
             created = dateutil.parser.isoparse(user['created_at']).replace(tzinfo=None)
 
-            username = user['name']
+            username = f'{user["name"]}#{user["discriminator"]}'
 
             created_delta = humanize.precisedelta(created, minimum_unit='days', format=r'%0.0f', )
             created_at = datetime.strftime(created, r'%B %m, %Y')
