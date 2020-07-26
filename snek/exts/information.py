@@ -30,7 +30,7 @@ class Information(Cog):
         embed.set_thumbnail(url=str(ctx.guild.icon_url))
 
         created_delta = humanize.precisedelta(ctx.guild.created_at, minimum_unit='days', format=r'%0.0f')
-        created_at = datetime.strftime(ctx.guild.created_at, r'%B %m, %Y')
+        created_at = datetime.strftime(ctx.guild.created_at, r'%B %d, %Y')
 
         members = ctx.guild.member_count
         roles = len(ctx.guild.roles)
@@ -90,7 +90,7 @@ class Information(Cog):
             embed.add_field(name='Permissions Code', value=role.permissions.value, inline=True)
             embed.add_field(name='Member Count', value=len(role.members), inline=True)
             embed.add_field(name='Position', value=role.position, inline=True)
-            embed.add_field(name='Creation Date', value=datetime.strftime(role.created_at, r'%B %m, %Y'), inline=True)
+            embed.add_field(name='Creation Date', value=datetime.strftime(role.created_at, r'%B %d, %Y'), inline=True)
 
             await ctx.send(embed=embed)
 
@@ -127,7 +127,7 @@ class Information(Cog):
     async def create_member_embed(self, ctx: Context, user: discord.Member) -> discord.Embed:
         """Creates an embed containing information about a member of the guild."""
         created_delta = humanize.precisedelta(user.created_at, minimum_unit='days', format=r'%0.0f')
-        created_at = datetime.strftime(user.created_at, r'%B %m, %Y')
+        created_at = datetime.strftime(user.created_at, r'%B %d, %Y')
 
         activity = ''
         activity_obj = user.activity
@@ -175,7 +175,7 @@ class Information(Cog):
             title = f'{user.nick} ({title})'
 
         joined_delta = humanize.precisedelta(user.joined_at, minimum_unit='days', format=r'%0.0f')
-        joined_at = datetime.strftime(user.joined_at, r'%B %m, %Y')
+        joined_at = datetime.strftime(user.joined_at, r'%B %d, %Y')
 
         # Skip @everyone
         roles = ', '.join(role.mention for role in user.roles[1:])
@@ -214,7 +214,7 @@ class Information(Cog):
             username = f'{user["name"]}#{user["discriminator"]}'
 
             created_delta = humanize.precisedelta(created, minimum_unit='days', format=r'%0.0f', )
-            created_at = datetime.strftime(created, r'%B %m, %Y')
+            created_at = datetime.strftime(created, r'%B %d, %Y')
             mention = f'<@{user["id"]}>'
             user_id = user['id']
 
@@ -224,7 +224,7 @@ class Information(Cog):
             username = str(user)
 
             created_delta = humanize.precisedelta(user.created_at, minimum_unit='days', format=r'%0.0f')
-            created_at = datetime.strftime(user.created_at, r'%B %m, %Y')
+            created_at = datetime.strftime(user.created_at, r'%B %d, %Y')
             mention = user.mention
             user_id = user.id
 
