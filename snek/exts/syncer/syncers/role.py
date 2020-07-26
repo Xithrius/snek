@@ -5,7 +5,7 @@ from snek.exts.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
 
-Role = namedtuple('Role', ('id', 'name', 'color', 'permissions', 'position', 'guild'))
+Role = namedtuple('Role', ('id', 'name', 'color', 'created_at', 'permissions', 'position', 'guild'))
 
 
 class RoleSyncer(ObjectSyncerABC):
@@ -23,6 +23,7 @@ class RoleSyncer(ObjectSyncerABC):
                 id=role.id,
                 name=role.name,
                 color=role.color.value,
+                created_at=str(role.created_at),
                 permissions=role.permissions.value,
                 position=role.position,
                 guild=guild.id

@@ -327,17 +327,18 @@ class PaginatedEmbed(discord.Embed):
 
         return True
 
-    async def set_footer(self, **kwargs) -> None:
+    def set_footer(self, **kwargs) -> None:
         """Set the footer text of the embed, including `text` and the page number."""
         if len(self.pages) == 1:
             # No need to set footer ourselves if there's one page
             super().set_footer(**kwargs)
+            return
 
         if 'text' in kwargs:
             self._footer_text = kwargs.pop('text')
 
-        page = f'Page {self.current_page + 1} / {len(self.pages)}'
+        text = f'Page {self.current_page + 1} / {len(self.pages)}'
         if self._footer_text:
-            text = f'{self._footer_text} ({page})'
+            text = f'{self._footer_text} ({text})'
 
         super().set_footer(text=text, **kwargs)

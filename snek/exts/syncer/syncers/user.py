@@ -5,7 +5,7 @@ from snek.exts.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
 
-User = namedtuple('User', ('id', 'name', 'discriminator', 'avatar_url', 'roles', 'guilds'))
+User = namedtuple('User', ('id', 'name', 'discriminator', 'created_at', 'avatar_url', 'roles', 'guilds'))
 
 
 class UserSyncer(ObjectSyncerABC):
@@ -43,6 +43,7 @@ class UserSyncer(ObjectSyncerABC):
                         id=user.id,
                         name=user.name,
                         discriminator=user.discriminator,
+                        created_at=str(user.created_at),
                         avatar_url=str(user.avatar_url),
                         roles=tuple(sorted(role.id for role in user.roles)),
                         guilds=tuple(g.id for g in self.bot.guilds if g.get_member(user.id) is not None)

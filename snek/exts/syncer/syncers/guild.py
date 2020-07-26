@@ -5,7 +5,7 @@ from snek.exts.syncer.syncers.base import Diff, ObjectSyncerABC
 
 log = logging.getLogger(__name__)
 
-Guild = namedtuple('Guild', ('id', 'name', 'icon_url'))
+Guild = namedtuple('Guild', ('id', 'name', 'created_at', 'icon_url'))
 
 
 class GuildSyncer(ObjectSyncerABC):
@@ -22,6 +22,7 @@ class GuildSyncer(ObjectSyncerABC):
             Guild(
                 id=guild.id,
                 name=guild.name,
+                created_at=str(guild.created_at),
                 icon_url=str(guild.icon_url)
             )
             for guild in self.bot.guilds
