@@ -17,6 +17,7 @@ snek = Snek(
     max_messages=10_000
 )
 
+# Ignore bots
 snek.check(lambda ctx: not ctx.author.bot)
 
 # Load extensions
