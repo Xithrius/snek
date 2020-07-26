@@ -25,7 +25,7 @@ This is what's currently planned for Snek.
     - [x] Guild information
     - [x] Bot information
         - [x] Uptime
-        - [ ] Lines of code
+        - [x] Lines of code
         - [x] Repository
     - [x] Site/API information
         - [x] Homepage
