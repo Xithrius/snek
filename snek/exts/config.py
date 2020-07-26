@@ -69,6 +69,9 @@ class Config(Cog):
         )
         await ctx.send(f'✅ Config key `{key}` was sucessfully reset.')
 
+    def cog_check(self, ctx: Context) -> bool:
+        return ctx.author.permissions_in(ctx.channel).administrator
+
 
 def setup(bot: Snek) -> None:
     """Load the `Config` cog."""
