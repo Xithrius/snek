@@ -4,11 +4,14 @@ import logging
 import textwrap
 import typing as t
 
+import arrow
 import dateutil.parser
+from dateutil.relativedelta import relativedelta
 import discord
 from discord.ext.commands import Cog, Context, command
 import humanize
 
+from snek import start_time
 from snek.bot import Snek
 from snek.utils import PaginatedEmbed
 
@@ -244,6 +247,36 @@ class Information(Cog):
 
         embed.set_thumbnail(url=avatar_url)
         return embed
+
+    @command(name='bot', aliases=('botinfo', 'invite', 'uptime'))
+    async def info_bot(self, ctx: Context) -> None:
+        """Sends the invite link for this bot."""
+        embed = discord.Embed(color=discord.Color.blurple())
+        embed.set_author(
+            name='Snek',
+            url='https://sneknetwork.com',
+            icon_url=str(self.bot.user.avatar_url)
+        )
+
+        source = 'https://github.com/Snek-Network/snek'
+        invite = f'https://discord.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=8&scope=bot'
+
+        embed.add_field(name='Source Code', value=f'[GitHub Link]({source})')
+        embed.add_field(name='Bot Invite', value=f'[Invite Link]({invite})', inline=False)
+
+        difference = relativedelta(start_time - arrow.utcnow())
+        uptime = start_time.shift(
+            seconds=-difference.seconds,
+            minutes=-difference.minutes,
+            hours=-difference.hours,
+            days=-difference.days
+        ).humanize()
+
+        embed.add_field(name='Uptime', value=uptime)
+
+        embed.set_thumbnail(url=str(self.bot.user.avatar_url))
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot: Snek) -> None:

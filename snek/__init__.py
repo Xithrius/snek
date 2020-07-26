@@ -5,7 +5,10 @@ import pathlib
 import sys
 from logging import handlers
 
+import arrow
 import coloredlogs
+
+start_time = arrow.utcnow()
 
 logging.TRACE = 5
 logging.addLevelName(logging.TRACE, 'TRACE')
