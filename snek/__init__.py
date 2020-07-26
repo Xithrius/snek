@@ -10,6 +10,21 @@ import coloredlogs
 
 start_time = arrow.utcnow()
 
+
+def get_loc(path: os.PathLike) -> int:
+    amount = 0
+
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith('.py'):
+                with open(os.path.join(root, file)) as f:
+                    amount += len(f.readlines())
+
+    return amount
+
+
+LOC = get_loc('snek')
+
 logging.TRACE = 5
 logging.addLevelName(logging.TRACE, 'TRACE')
 

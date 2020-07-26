@@ -11,7 +11,7 @@ import discord
 from discord.ext.commands import Cog, Context, command
 import humanize
 
-from snek import start_time
+from snek import start_time, LOC
 from snek.bot import Snek
 from snek.utils import PaginatedEmbed
 
@@ -295,6 +295,7 @@ class Information(Cog):
         ).humanize()
 
         embed.add_field(name='Uptime', value=uptime)
+        embed.add_field(name='LoC', value=f'{LOC:,} lines')
 
         embed.set_thumbnail(url=str(self.bot.user.avatar_url))
 
