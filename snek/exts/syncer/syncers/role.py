@@ -15,7 +15,7 @@ class RoleSyncer(ObjectSyncerABC):
     async def get_diff(self) -> Diff:
         """Return the difference between the cache of roles and the database."""
         log.trace('Getting the diff for roles..')
-        roles = await self.bot.api_client.get('roles/')
+        roles = await self.bot.api_client.get('roles')
 
         db_roles = {Role(**role) for role in roles}
         cache_roles = {
@@ -48,7 +48,7 @@ class RoleSyncer(ObjectSyncerABC):
         """Synchronise the database with the roles in the cache."""
         log.trace('Syncing created roles..')
         for role in diff.created:
-            await self.bot.api_client.post('roles/', json=role._asdict())
+            await self.bot.api_client.post('roles', json=role._asdict())
 
         log.trace('Syncing updated roles..')
         for role in diff.updated:

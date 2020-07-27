@@ -99,7 +99,7 @@ class APIClient:
 
     @staticmethod
     def endpoint_url(endpoint: str) -> str:
-        return f'https://sneknetwork.com/api/{quote(endpoint)}'
+        return f'{os.environ.get("SNEK_SITE_URL", "https://sneknetwork.com")}/api/{quote(endpoint)}'
 
     async def request(self, method: str, endpoint: str, raise_for_status: bool = True, **kwargs) -> t.Dict:
         """Send an HTTP request to the Snek API and return the JSON response."""

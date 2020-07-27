@@ -8,7 +8,30 @@ services:
       - ./logs/:/bot/logs/
       - ./:/bot/:ro
     tty: true
+    depends_on:
+      - snek-site
     environment:
       SNEK_BOT_TOKEN: ${SNEK_BOT_TOKEN}
-      SNEK_API_TOKEN: ${SNEK_API_TOKEN}
-      SNEK_LOG_LEVEL: ${SNEK_LOG_LEVEL}
+      SNEK_API_TOKEN: 704Z1PjVo0SbjDCbtkL5J4GYQMqiUm9vJrjCXY8O
+      SNEK_LOG_LEVEL: TRACE
+      SNEK_SITE_URL: http://snek-site:8000
+
+  snek-site:
+    image: sneknetwork/snek-site:latest
+    command: ["run", "--debug"]
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    environment:
+      SECRET_KEY: only-for-development
+      DATABASE_URL: psql://snek_site:snek_site@postgres:5432/snek_site
+
+  postgres:
+    image: postgres:latest
+    expose:
+    - 5432
+    environment:
+      POSTGRES_USER: snek_site
+      POSTGRES_PASSWORD: snek_site
+      POSTGRES_DB: snek_site

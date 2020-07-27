@@ -216,13 +216,13 @@ class Information(Cog):
                 if '#' in user:
                     name, discrim = user.rsplit('#', maxsplit=1)
                     users = await self.bot.api_client.get(
-                        'users/',
+                        'users',
                         params={'name': name, 'discriminator': discrim}
                     )
 
                 else:
                     users = await self.bot.api_client.get(
-                        'users/',
+                        'users',
                         params={'name': user}
                     )
 

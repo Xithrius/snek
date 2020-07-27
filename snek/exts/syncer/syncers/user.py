@@ -15,7 +15,7 @@ class UserSyncer(ObjectSyncerABC):
     async def get_diff(self) -> Diff:
         """Return the difference between the cache of users and the database."""
         log.trace('Getting diff for users..')
-        users = await self.bot.api_client.get('users/')
+        users = await self.bot.api_client.get('users')
 
         db_users = {
             User(
@@ -63,7 +63,7 @@ class UserSyncer(ObjectSyncerABC):
         """Synchronise the database with the users in the cache."""
         log.trace('Syncing created users..')
         for user in diff.created:
-            await self.bot.api_client.post('users/', json=user._asdict())
+            await self.bot.api_client.post('users', json=user._asdict())
 
         log.trace('Syncing updated users..')
         for user in diff.updated:

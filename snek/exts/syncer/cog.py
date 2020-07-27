@@ -52,7 +52,7 @@ class Syncer(Cog):
                 raise
 
             # If we got a 404, that means the guild is new.
-            await self.bot.api_client.post('guilds/', json=payload)
+            await self.bot.api_client.post('guilds', json=payload)
 
         await self.sync()
 
@@ -75,7 +75,7 @@ class Syncer(Cog):
         """Adds the newly created role to the database through the API."""
         log.trace(f'New role {role.name} ({role.id}) created in guild {role.guild.name} ({role.guild.id})')
         await self.bot.api_client.post(
-            'roles/',
+            'roles',
             json={
                 'id': role.id,
                 'color': role.color.value,
@@ -139,7 +139,7 @@ class Syncer(Cog):
                 raise
 
             # If we got a 404, that means the user is new.
-            await self.bot.api_client.post('users/', json=payload)
+            await self.bot.api_client.post('users', json=payload)
 
     @Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member) -> None:
