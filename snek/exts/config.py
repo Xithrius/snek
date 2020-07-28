@@ -72,7 +72,7 @@ class Config(Cog):
             )
             self.bot.configs[ctx.guild.id][key] = value
 
-            await ctx.send(f'✅ Config key `{key}` was sucessfully reset.')
+            await ctx.send(f'✅ Config key `{key}` was sucessfully reset to `{value}`')
         else:
             await ctx.send('❌ There is no such config key.')
 
