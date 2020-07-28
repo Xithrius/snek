@@ -24,3 +24,15 @@ class Scheduler:
     def __contains__(self, task_id: t.Hashable) -> bool:
         """Checks whether or not `task_id` is currently scheduled."""
         return task_id in self.tasks
+
+    def __getitem__(self, task_id: t.Hashable) -> t.Coroutine:
+        """Returns the coroutine mapped to `task_id`; Raises a `KeyError` if not found."""
+        return self.tasks[task_id]
+
+    def __setitem__(self, task_id: t.Hashable, coroutine: t.Coroutine) -> None:
+        """Sets the coroutine to the `task_id`."""
+        self.tasks[task_id] = coroutine
+
+    def get(self, task_id: t.Hashable) -> t.Coroutine:
+        """Returns the coroutine mapped to `task_id`; Returns `None` if not found."""
+        return self.tasks.get(task_id)
