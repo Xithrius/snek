@@ -46,6 +46,8 @@ class Config(Cog):
                 f'guild_configs/{ctx.guild.id}',
                 json={key: value}
             )
+            self.bot.configs[ctx.guild.id][key] = value
+
             await ctx.send(f'✅ Config key `{key}` successfully updated.')
 
     @config_group.command(name='get', aliases=('g',))
