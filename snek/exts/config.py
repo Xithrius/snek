@@ -57,25 +57,22 @@ class Config(Cog):
     @config_group.command(name='get', aliases=('g',))
     async def get_command(self, ctx: Context, key: str) -> None:
         """Get the value of `key` from a guild's config."""
-        if key not in CONFIG_DEFAULTS:
+        if (value := CONFIG_DEFAULTS.get(key)) is not None:
+            await ctx.send(f'The value of `{key}` is `{value}`.')
+        else:
             await ctx.send('❌ There is no such config key.')
-            return
-
-        config = await self.bot.api_client.get(f'guild_configs/{ctx.guild.id}')
-        await ctx.send(f'The value of `{key}` is `{config[key]}`.')
 
     @config_group.command(name='reset', aliases=('r',))
     async def reset_command(self, ctx: Context, key: str) -> None:
         """Reset the value of `key` in a guild's config."""
-        if key not in CONFIG_DEFAULTS:
+        if (value := CONFIG_DEFAULTS.get(key)) is not None:
+            await self.bot.api_client.patch(
+                f'guild_configs/{ctx.guild.id}',
+                json={key: value}
+            )
+            await ctx.send(f'✅ Config key `{key}` was sucessfully reset.')
+        else:
             await ctx.send('❌ There is no such config key.')
-            return
-
-        await self.bot.api_client.patch(
-            f'guild_configs/{ctx.guild.id}',
-            json={key: CONFIG_DEFAULTS[key]}
-        )
-        await ctx.send(f'✅ Config key `{key}` was sucessfully reset.')
 
     def cog_check(self, ctx: Context) -> bool:
         return ctx.author.permissions_in(ctx.channel).administrator
