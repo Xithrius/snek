@@ -1,7 +1,8 @@
 import logging
 import typing as t
 
-from discord.ext.commands import Bot, Cog
+import discord
+from discord.ext.commands import Bot, Cog, when_mentioned_or
 
 from snek.api import APIClient
 
@@ -29,3 +30,7 @@ class Snek(Bot):
         """Close the Discord and API Client connection."""
         await super().close()
         await self.api_client.close()
+
+    async def get_prefix(self, message: discord.Message) -> str:
+        """Returns the prefix for the guild where a command was invoked."""
+        return when_mentioned_or(self.configs[message.guild.id]['command_prefix'])(self, message)
