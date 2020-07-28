@@ -7,7 +7,7 @@ from snek.bot import Snek
 
 log = logging.getLogger(__name__)
 
-CONFIG_KEYS = ('mod_role', 'admin_role')
+CONFIG_KEYS = ('mod_role', 'admin_role', 'command_prefix')
 
 
 async def convert_config_value(ctx: Context, key: str, value: str) -> t.Any:
@@ -18,6 +18,8 @@ async def convert_config_value(ctx: Context, key: str, value: str) -> t.Any:
     if key in ('mod_role', 'admin_role'):
         role_converter = RoleConverter()
         return (await role_converter.convert(ctx, value)).id
+
+    return value
 
 
 class Config(Cog):
