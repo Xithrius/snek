@@ -77,6 +77,7 @@ class Config(Cog):
             await ctx.send('❌ There is no such config key.')
 
     def cog_check(self, ctx: Context) -> bool:
+        """Only administrators can use this cog."""
         return ctx.author.permissions_in(ctx.channel).administrator
 
 
