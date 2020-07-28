@@ -1,4 +1,5 @@
 import logging
+import typing as t
 
 from discord.ext.commands import Bot, Cog
 
@@ -15,6 +16,9 @@ class Snek(Bot):
         log.info('Snek initializing..')
 
         self.api_client = APIClient(loop=self.loop)
+
+        # Syncer takes care of this
+        self.configs: t.Optional[t.Dict[int, str]] = None
 
     def add_cog(self, cog: Cog) -> None:
         """Adds a cog to the bot and logs the operation."""
