@@ -7,12 +7,16 @@ from snek.bot import Snek
 
 log = logging.getLogger(__name__)
 
-CONFIG_KEYS = ('mod_role', 'admin_role', 'command_prefix')
+CONFIG_DEFAULTS = {
+    'mod_role': None,
+    'admin_role': None,
+    'command_prefix': '!'
+}
 
 
 async def convert_config_value(ctx: Context, key: str, value: str) -> t.Any:
     """Converts a config value according to its key."""
-    if key not in CONFIG_KEYS:
+    if key not in CONFIG_DEFAULTS:
         raise ValueError('❌ There is no such config key.')
 
     if key in ('mod_role', 'admin_role'):
@@ -53,7 +57,7 @@ class Config(Cog):
     @config_group.command(name='get', aliases=('g',))
     async def get_command(self, ctx: Context, key: str) -> None:
         """Get the value of `key` from a guild's config."""
-        if key not in CONFIG_KEYS:
+        if key not in CONFIG_DEFAULTS:
             await ctx.send('❌ There is no such config key.')
             return
 
@@ -63,13 +67,13 @@ class Config(Cog):
     @config_group.command(name='reset', aliases=('r',))
     async def reset_command(self, ctx: Context, key: str) -> None:
         """Reset the value of `key` in a guild's config."""
-        if key not in CONFIG_KEYS:
+        if key not in CONFIG_DEFAULTS:
             await ctx.send('❌ There is no such config key.')
             return
 
         await self.bot.api_client.patch(
             f'guild_configs/{ctx.guild.id}',
-            json={key: None}
+            json={key: CONFIG_DEFAULTS[key]}
         )
         await ctx.send(f'✅ Config key `{key}` was sucessfully reset.')
 
