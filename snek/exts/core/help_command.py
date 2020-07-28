@@ -150,9 +150,10 @@ class CustomHelpCommand(HelpCommand):
 
         parent = command.full_parent_name
         name = str(command) if not parent else f'{parent} {command.name}'
+        prefix = self.context.bot.configs[self.context.guild.id]['command_prefix']
 
         # Show command signature
-        command_details = f'**```!{name} {command.signature}```**\n'
+        command_details = f'**```{prefix}{name} {command.signature}```**\n'
 
         # Show aliases
         aliases = ', '.join(
@@ -177,16 +178,17 @@ class CustomHelpCommand(HelpCommand):
         message = await self.context.send(embed=embed)
         await help_cleanup(self.context.bot, self.context.author, message)
 
-    @staticmethod
     def get_command_details(
-        commands: t.List[Command], return_as_list: bool = False
+        self, commands: t.List[Command], return_as_list: bool = False
     ) -> t.Union[t.List[str], str]:
         """Format the prefix, command name, signature, and short docs."""
         details = list()
+        prefix = self.context.bot.configs[self.context.guild.id]['command_prefix']
+
         for command in commands:
             signature = f' {command.signature}' if command.signature else ''
             details.append(
-                f'\n**`!{command.qualified_name}{signature}`**'
+                f'\n**`{prefix}{command.qualified_name}{signature}`**'
                 f'\n*{command.short_doc or "No details provided."}*'
             )
 
