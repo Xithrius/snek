@@ -47,3 +47,7 @@ class GuildSyncer(ObjectSyncerABC):
         log.trace('Syncing updated guilds..')
         for guild in diff.updated:
             await self.bot.api_client.put(f'guilds/{guild.id}', json=guild._asdict())
+
+        log.trace('Syncing all guild configs..')
+        configs = await self.bot.api_client.get('guild_configs')
+        self.bot.configs = {config['guild']: config for config in configs}

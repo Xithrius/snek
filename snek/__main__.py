@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 snek = Snek(
     command_prefix=when_mentioned_or('!'),
-    activity=discord.Game(name='Commands: !help'),
+    activity=discord.Activity(name='over everyone.', type=discord.ActivityType.watching),
     case_insensitive=True,
     max_messages=10_000
 )
