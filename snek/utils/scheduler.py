@@ -20,3 +20,7 @@ class Scheduler:
 
         self.log = logging.getLogger(f'{name} {type(self).__name__}')
         self.tasks: t.Dict[t.Hashable, asyncio.Task] = dict()
+
+    def __contains__(self, task_id: t.Hashable) -> bool:
+        """Checks whether or not `task_id` is currently scheduled."""
+        return task_id in self.tasks
