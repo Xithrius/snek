@@ -1,4 +1,7 @@
 import asyncio
+import contextlib
+import functools
+import inspect
 import logging
 import typing as t
 
@@ -36,3 +39,63 @@ class Scheduler:
     def get(self, task_id: t.Hashable) -> t.Optional[asyncio.Task]:
         """Returns the coroutine mapped to `task_id`; Returns `None` if not found."""
         return self.tasks.get(task_id)
+
+    def schedule(self, task_id: t.Hashable, coroutine: t.Coroutine) -> None:
+        """
+        Schedule the execution of a coroutine.
+
+        It a task with `task_id` already exists, the coroutine will be closed
+        instead of scheduling it. This prevents unawaited coroutine warnings.
+        """
+        self.log.trace(f'Scheduling task #{task_id}.')
+
+        msg = f'Cannot schedule an already started coroutine for #{task_id}'
+        assert inspect.getcoroutinestate(coroutine) == 'CORO_CREATED', msg
+
+        if task_id in self:
+            self.log.debug(f'Task #{task_id} was not scheduled; already scheduled.')
+            coroutine.close()
+            return
+
+        task = asyncio.create_task(coroutine, name=f'{self.name}_{task_id}')
+        task.add_done_callback(
+            functools.partial(self._task_done_callback, task_id)
+        )
+
+        self[task_id] = task
+        self.log.debug(f'Scheduled task #{task_id}.')
+
+    def _task_done_callback(self, task_id: t.Hashable, done_task: asyncio.Task) -> None:
+        """
+        Deletes the task and raises its exception if one exists.
+
+        If `done_task` and the task mapped to `task_id` are not the same,
+        then the latter will not be deleted. In this case, a new task was
+        most likely scheduled with the same ID.
+        """
+        self.log.trace(f'Performing done callback for #{task_id}.')
+
+        scheduled_task = self.get(task_id)
+
+        if scheduled_task is not None and done_task is scheduled_task:
+            # A task for this ID exists and is the same as `done_task`
+            self.log.trace(f'Deleting task #{task_id}.')
+            del self[task_id]
+
+        elif scheduled_task is not None:
+            # A new task was most likely scheduled with the same ID
+            self.log.debug(
+                f'Task #{task_id} has changed; another task was likely scheduled with the same ID.'
+            )
+
+        elif not done_task.cancelled():
+            self.log.warning(
+                f'Task #{task_id} not found while handling task {id(done_task)}! '
+                f'A task was somehow unscheduled improperly.'
+            )
+
+        with contextlib.suppress(asyncio.CancelledError):
+            exception = done_task.exception()
+
+            if exception is not None:
+                self.log.error(f'Error in task #{task_id}!', exc_info=exception)
