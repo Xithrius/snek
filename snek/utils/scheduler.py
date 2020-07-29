@@ -89,6 +89,20 @@ class Scheduler:
         """
         self.schedule(task_id, self._future_await(seconds, task_id, coroutine))
 
+    def cancel(self, task_id: t.Hashable) -> None:
+        """Unschedule the task mapped to `task_id`."""
+        self.log.trace(f'Cancelling task #{task_id}')
+
+        try:
+            task = self.tasks.pop(task_id)
+
+        except KeyError:
+            self.log.warning(f'Failed to unschedule task #{task_id}; task was not found.')
+
+        else:
+            task.cancel()
+            self.log.debug(f'Task #{task_id} successfully unscheduled.')
+
     async def _future_await(self, delay: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
         try:
             self.log.trace(f'Waiting {delay} seconds before awaiting task #{task_id}.')
