@@ -72,7 +72,7 @@ class Scheduler:
         If a task with `task_id` already exists, the coroutine will be closed
         instead of scheduling it. This prevents unawaited coroutine warnings.
         """
-        self.schedule(task_id, self._future_await(seconds, coroutine))
+        self.schedule(task_id, self._future_await(seconds, task_id, coroutine))
 
     async def _future_await(self, delay: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
         try:
