@@ -33,6 +33,6 @@ class Scheduler:
         """Sets the coroutine to the `task_id`."""
         self.tasks[task_id] = task
 
-    def get(self, task_id: t.Hashable) -> t.Coroutine:
+    def get(self, task_id: t.Hashable) -> t.Optional[asyncio.Task]:
         """Returns the coroutine mapped to `task_id`; Returns `None` if not found."""
         return self.tasks.get(task_id)
