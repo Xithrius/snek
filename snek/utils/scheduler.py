@@ -65,6 +65,27 @@ class Scheduler:
         self[task_id] = task
         self.log.debug(f'Scheduled task #{task_id}.')
 
+    async def _future_await(self, delay: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
+        try:
+            self.log.trace(f'Waiting {delay} seconds before awaiting task #{task_id}.')
+            await asyncio.sleep(delay)
+
+            # Shield to prevent coroutine from cancelling itself
+            self.log.trace(f'Finished waiting for #{task_id}; awaiting coroutine now.')
+            await asyncio.shield(coroutine)
+
+        finally:
+            # Close to prevent unawaited coroutine warnings
+            # Happens if task was cancelled while sleeping
+            state = inspect.getcoroutinestate(coroutine)
+
+            if state == 'CORO_CREATED':
+                self.log.debug(f'Explicitly closing task #{task_id}.')
+                coroutine.close()
+
+            else:
+                self.log.debug(f'Finally block reached for #{task_id}; {state=}')
+
     def _task_done_callback(self, task_id: t.Hashable, done_task: asyncio.Task) -> None:
         """
         Deletes the task and raises its exception if one exists.
