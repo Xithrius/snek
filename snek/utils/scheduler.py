@@ -65,6 +65,15 @@ class Scheduler:
         self[task_id] = task
         self.log.debug(f'Scheduled task #{task_id}.')
 
+    def schedule_in(self, seconds: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
+        """
+        Schedule a coroutine to be awaited for `seconds` seconds.
+
+        If a task with `task_id` already exists, the coroutine will be closed
+        instead of scheduling it. This prevents unawaited coroutine warnings.
+        """
+        self.schedule(task_id, self._future_await(seconds, coroutine))
+
     async def _future_await(self, delay: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
         try:
             self.log.trace(f'Waiting {delay} seconds before awaiting task #{task_id}.')
