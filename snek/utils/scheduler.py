@@ -1,5 +1,6 @@
 import asyncio
 import contextlib
+from datetime import datetime
 import functools
 import inspect
 import logging
@@ -64,6 +65,20 @@ class Scheduler:
 
         self[task_id] = task
         self.log.debug(f'Scheduled task #{task_id}.')
+
+    def schedule_at(self, datetime_: datetime, task_id: t.Hashable, coroutine: t.Coroutine) -> None:
+        """
+        Schedule a coroutine to be awaited at `datetime`.
+
+        If a task with `task_id` already exists, the coroutine will be closed
+        instead of scheduling it. This prevents unawaited coroutine warnings.
+        """
+        seconds = (datetime_ - datetime.now()).total_seconds()
+
+        if seconds > 0:
+            coroutine = self._future_await(seconds, task_id, coroutine)
+
+        self.schedule(task_id, coroutine)
 
     def schedule_in(self, seconds: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
         """
