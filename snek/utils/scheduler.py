@@ -103,6 +103,13 @@ class Scheduler:
             task.cancel()
             self.log.debug(f'Task #{task_id} successfully unscheduled.')
 
+    def cancel_all(self) -> None:
+        """Unschedule all tasks."""
+        self.log.debug('Unscheduling all tasks..')
+
+        for task_id in self.tasks.copy():
+            self.cancel(task_id)
+
     async def _future_await(self, delay: t.Union[int, float], task_id: t.Hashable, coroutine: t.Coroutine) -> None:
         try:
             self.log.trace(f'Waiting {delay} seconds before awaiting task #{task_id}.')
