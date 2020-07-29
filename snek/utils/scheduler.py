@@ -45,7 +45,7 @@ class Scheduler:
         """
         Schedule the execution of a coroutine.
 
-        It a task with `task_id` already exists, the coroutine will be closed
+        If a task with `task_id` already exists, the coroutine will be closed
         instead of scheduling it. This prevents unawaited coroutine warnings.
         """
         self.log.trace(f'Scheduling task #{task_id}.')
