@@ -52,6 +52,9 @@ class Infractions(Cog):
     def apply_infraction(self, ctx: Context, payload: InfractionPayload) -> None:
         """Applies an infraction to an offending member."""
 
+    def pardon_infraction(self, ctx: Context, infr_type: Infraction, user):
+        """Pardons an infraction from a user."""
+
     @command(name='ban')
     def apply_ban(self, ctx: Context, user: t.Union[discord.Member, discord.User], reason: t.Optional[str]) -> None:
         """Bans an offending member of a guild."""
@@ -80,18 +83,18 @@ class Infractions(Cog):
     def apply_note(self, ctx: Context, user: t.Union[discord.Member, discord.User], reason: str) -> None:
         """Keeps a note on an offending member of a guild."""
 
-    @command(name='unban')
+    @command(aliases=('unban',))
     def pardon_ban(self, ctx: Context, user: discord.User, reason: t.Optional[str]) -> None:
         """Pardons a ban."""
 
-    @command(name='unmute')
+    @command(aliases=('unmute',))
     def pardon_mute(self, ctx: Context, user: discord.User, reason: t.Optional[str]) -> None:
         """Pardons a mute."""
 
-    @command(name='unwatch')
+    @command(aliases=('unwatch',))
     def pardon_watch(self, ctx: Context, user: discord.User, reason: t.Optional[str]) -> None:
         """Pardons a watch."""
 
-    @command(name='unnick')
+    @command(aliases=('unnick',))
     def pardon_nick(self, ctx: Context, user: discord.User, reason: t.Optional[str]) -> None:
         """Pardons a forced nickname."""
