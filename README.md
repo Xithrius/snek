@@ -103,12 +103,12 @@ This is what's currently planned for Snek.
     - [ ] Get
     - [ ] Delete
 
-- [ ] Fun Extension/Cog
-    - [ ] Uwu
-    - [ ] Random case
-    - [ ] 8ball
-    - [ ] Flip a coin
-    - [ ] Roll a die
+- [x] Fun Extension/Cog
+    - [x] Uwu
+    - [x] Random case
+    - [x] 8ball
+    - [x] Flip a coin
+    - [x] Roll a die
 
 - [ ] Source Extension/Cog
     - Sends the link to the source of a command/cog (Use the inspect module)
